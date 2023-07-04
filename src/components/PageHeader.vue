@@ -6,12 +6,16 @@ const props = defineProps({
   back_button: Boolean
 })
 
+function goBack() {
+    window.history.back();
+}
+
 </script>
 
 <template>
     <div id="container">
-        <a v-if="back_button">
-            <img id="back_button" src="../assets/icons/arrow_left.svg">
+        <a :class="back_button ? 'visible' : 'hidden'">
+            <img @click="goBack()" id="back_button" src="../assets/icons/arrow_left.svg">
         </a>
         <h1>{{ title }}</h1>
     </div>
@@ -37,6 +41,10 @@ a {
     justify-content: right;
     align-items: center;
     max-height: 28px;
+}
+
+.hidden {
+    visibility: hidden;
 }
 
 #back_button {

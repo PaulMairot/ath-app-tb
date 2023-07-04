@@ -19,6 +19,7 @@ const props = defineProps({
         <div class="infos">
             <Info :text='city' icon="city.svg"></Info>
             <Info :text='date' icon="calendar.svg"></Info>
+            <Info :text='date' icon="calendar.svg"></Info>
         </div>
     </div>
 </template>
@@ -35,7 +36,7 @@ const props = defineProps({
     }
 
     .title {
-        margin-bottom: 15px;
+        margin-bottom: 5px;
     }
 
     .icon.accent{
@@ -45,6 +46,7 @@ const props = defineProps({
     .infos {
         display: flex;
         flex-direction: row;
+        flex-wrap: wrap;
         gap: 10px;
     }
 

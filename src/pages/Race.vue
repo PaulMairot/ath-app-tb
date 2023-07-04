@@ -1,9 +1,10 @@
 <script setup>
+import PageHeader from '../components/PageHeader.vue';
 
 </script>
 
 <template>
-  <h1>Race</h1>
+  <PageHeader title="Race" :back_button='true'></PageHeader>
 </template>
 
 <style scoped>

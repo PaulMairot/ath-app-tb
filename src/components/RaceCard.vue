@@ -53,7 +53,7 @@ const props = defineProps({
         flex-direction: row;
         align-content: center;
         justify-content: center;
-        margin-bottom: 15px;
+        margin-bottom: 5px;
     }
 
     .infos {
@@ -80,6 +80,10 @@ const props = defineProps({
         justify-content: right;
         align-items: center;
         max-height: 28px;
+    }
+
+    .infos p {
+        margin: 0;
     }
     
 

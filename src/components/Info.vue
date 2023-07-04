@@ -29,7 +29,7 @@ function getIconUrl() {
         flex-direction: row;
         justify-content: left;
         align-items: center;
-        margin-bottom: 15px;
+        margin-bottom: 10px;
     }
 
 
