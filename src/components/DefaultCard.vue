@@ -1,32 +1,32 @@
 <script setup>
 import '../style.css';
-import Info from '../components/Info.vue';
+import InfoVertical from '../components/InfoVertical.vue';
+import ResultList from '../components/ResultList.vue';
+import CardHeader from './CardHeader.vue';
 
 const props = defineProps({
-  title: String,
-  city: String,
-  date: String,
-  link: String
+  cardTitle: String,
+  infos: Array,
+  listTitle: String,
+  listInfos: Array
 })
 
 </script>
 
 <template>
     <div id="container">
-        <div class="title">
-            <Info :text='title' icon="trophy.svg" :accent=true></Info>
-        </div>
+        <CardHeader :title="cardTitle"></CardHeader>
         <div class="infos">
-            <Info :text='city' icon="city.svg"></Info>
-            <Info :text='date' icon="calendar.svg"></Info>
+            <InfoVertical v-for="info in infos" :text='info.text' :icon='info.icon' :legend='info.legend' :accent='info.accent'></InfoVertical>
         </div>
+        <ResultList v-if="listInfos" :title="listTitle" :results="listInfos"></ResultList>
     </div>
 </template>
 
 <style scoped>
     #container {
         background-color: var(--primary);
-        padding: 25px 40px 10px 40px;
+        padding: 10px 20px;
         border-radius: 8px;
         max-width: 370px;
         box-shadow: var(--shadow);
@@ -45,8 +45,7 @@ const props = defineProps({
     .infos {
         display: flex;
         flex-direction: row;
-        flex-wrap: wrap;
-        gap: 10px;
+        justify-content: space-evenly;
     }
 
     @media (max-width: 600px) {

@@ -4,6 +4,7 @@
   --header: #fafafa;
   --text: #cecece;
   --text_filter: invert(79%) sepia(0%) saturate(0%) hue-rotate(274deg) brightness(109%) contrast(85%);
+  --option: #a0a0a0;
   --accent: #c23a30;
   --accent_filter: invert(27%) sepia(50%) saturate(4407%) hue-rotate(349deg) brightness(83%) contrast(80%);
   --shadow: 0px 0px 4px rgba(0, 0, 0, 0.25);
@@ -22,6 +23,12 @@ body {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   -webkit-text-size-adjust: 100%;
+}
+
+div {
+  -webkit-box-sizing: border-box; /* Safari/Chrome, other WebKit */
+  -moz-box-sizing: border-box;    /* Firefox, other Gecko */
+  box-sizing: border-box;         /* Opera/IE 8+ */
 }
 
 h1 {
@@ -56,6 +63,7 @@ p, a {
     --header: #212121;
     --text: #3c3c3c;
     --text_filter:filter: invert(22%) sepia(1%) saturate(3398%) hue-rotate(30deg) brightness(96%) contrast(92%);
+    --option: #a0a0a0;
     --accent: #c23a30;
     --accent_filter: invert(27%) sepia(50%) saturate(4407%) hue-rotate(349deg) brightness(83%) contrast(80%);
   }
@@ -68,6 +76,7 @@ p, a {
     --header: #fafafa;
     --text: #cecece;
     --text_filter: invert(79%) sepia(0%) saturate(0%) hue-rotate(274deg) brightness(109%) contrast(85%);
+    --option: #a0a0a0;
     --accent: #c23a30;
     --accent_filter: invert(27%) sepia(50%) saturate(4407%) hue-rotate(349deg) brightness(83%) contrast(80%);
   }

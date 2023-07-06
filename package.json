@@ -9,6 +9,7 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "flag-icons": "^6.7.0",
     "vue": "^3.2.47"
   },
   "devDependencies": {

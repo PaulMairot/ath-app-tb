@@ -1,9 +1,12 @@
 <script setup>
 import '../style.css';
 import Info from '../components/Info.vue';
+import CardHeader from './CardHeader.vue';
+
 
 const props = defineProps({
   title: String,
+  meeting: String,
   date: String,
   time: String,
   location: String,
@@ -14,17 +17,19 @@ const props = defineProps({
 })
 
 function capitalizeFirstLetter(str) {
-    return str.charAt(0).toUpperCase() + str.slice(1)
+    return str.charAt(0).toUpperCase() + str.slice(1);
 }
 
 </script>
 
 <template>
     <div id="container">
+        <CardHeader title="Race informations"></CardHeader>
         <div class="title">
-            <Info :text='title' icon="trophy.svg" :accent=true></Info>
+            <Info v-if="title" :text='title' icon="shoe.svg" :accent=true></Info>
+            <Info :text='meeting' icon="trophy.svg" :accent="title?false:true"></Info>
         </div>
-        <div class="infos">
+        <div class="infos" v-if="!title">
             <div class="col">
                 <Info :text='date' icon="calendar.svg"></Info>
                 <Info :text='location' icon="location.svg"></Info>
@@ -34,9 +39,7 @@ function capitalizeFirstLetter(str) {
                 <Info :text='time' icon="time.svg"></Info>
                 <Info :text='city' icon="calendar.svg"></Info>
                 <Info :text="wind + ' km/h'" icon="wind.svg"></Info>
-            </div>
-            
-            
+            </div>            
         </div>
     </div>
 </template>
@@ -44,9 +47,9 @@ function capitalizeFirstLetter(str) {
 <style scoped>
     #container {
         background-color: var(--primary);
-        padding: 25px 20px 10px 20px;
+        padding: 10px 20px;
         border-radius: 8px;
-        max-width: 330px;
+        max-width: 370px;
         box-shadow: var(--shadow);
 
         margin-bottom: 10px;
@@ -54,9 +57,11 @@ function capitalizeFirstLetter(str) {
 
     .title {
         display: flex;
-        justify-content: center;
+        flex-direction: column;
+        align-items: center;
         margin-bottom: 5px;
     }
+
 
     .icon.accent{
         filter: var(--accent_filter)
@@ -69,5 +74,11 @@ function capitalizeFirstLetter(str) {
         justify-content: space-between;
         flex-grow: 1;
     }
+
+    @media (max-width: 600px) {
+    #container {
+        max-width: 100%;
+    }
+}
 
 </style>

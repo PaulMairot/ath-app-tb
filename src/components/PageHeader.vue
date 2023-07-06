@@ -3,7 +3,8 @@ import '../style.css';
 
 const props = defineProps({
   title: String,
-  back_button: Boolean
+  back_button: Boolean,
+  live: Boolean
 })
 
 function goBack() {
@@ -18,6 +19,7 @@ function goBack() {
             <img @click="goBack()" id="back_button" src="../assets/icons/arrow_left.svg">
         </a>
         <h1>{{ title }}</h1>
+        <img :class="live ? 'visible' : 'hidden'" id="live_indicator" src="../assets/icons/live.svg">
     </div>
     
 </template>
@@ -27,8 +29,10 @@ function goBack() {
     display: flex;
     flex-direction: row;
     align-items: center;
+    justify-content: flex-start;
+    gap: 12px;
 
-    margin: 20px auto 50px auto;
+    margin: 20px auto 30px auto;
 }
 
 h1 {
@@ -44,22 +48,30 @@ a {
 }
 
 .hidden {
-    visibility: hidden;
+    display: none;
 }
 
 #back_button {
     width: 28px;
     height: 28px;
-    margin-right: 12px;
     filter: var(--text_filter);
 }
 
+#live_indicator {
+    width: 32px;
+    height: 32px;
+    filter: var(--accent_filter);
+  }
+
 @media (max-width: 600px) {
 
-    #container > :nth-child(1) {
-        flex: 0.5;
-        justify-content: start;
+    #container {
+        justify-content: space-between;
+        padding: 0 2px;
+    }
 
+    #back_button {
+        margin: 0;
     }
 }
 </style>
