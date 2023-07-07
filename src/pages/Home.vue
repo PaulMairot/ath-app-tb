@@ -6,6 +6,7 @@ import RaceCard from '../components/RaceCard.vue';
 import RaceCardDetailled from '../components/RaceCardDetailled.vue';
 import DefaultCard from '../components/DefaultCard.vue';
 import ChartCard from '../components/ChartCard.vue';
+import TrackCard from '../components/TrackCard.vue';
 
 let cardTestChart = [
     {
@@ -23,7 +24,7 @@ let cardTestAthlete = [
     },
     {
         "text":"Quatar", 
-        "icon":"chrono.svg", 
+        "icon":"qa", 
         "legend":"Nationality"
     },
     {
@@ -67,10 +68,25 @@ let cardTestList = [
     }
 ]
 
+let cardTestTrack = [
+    {
+        "text":"4th", 
+        "icon":"podium.svg", 
+        "legend":"Rank"
+    },
+    {
+        "text":"27.2 km/h", 
+        "icon":"speed.svg", 
+        "legend":"Speed"
+    }
+]
+
 </script>
 
 <template>
     <PageHeader title="Home" :back_button='false'></PageHeader>
+
+    <TrackCard cardTitle="Rewind" :infos="cardTestTrack"></TrackCard>
 
     <ChartCard cardTitle="Speed" :infos="cardTestChart">tew</ChartCard>
     
@@ -114,7 +130,7 @@ let cardTestList = [
         box-shadow: var(--shadow);
         background-color: var(--primary);
         padding: 10px 20px;
-        margin: 20px 0 10px 0;
+        margin: 10px 0;
         
         max-width: 370px;
     }

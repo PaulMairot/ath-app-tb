@@ -13,11 +13,16 @@ function getIconUrl() {
   return new URL(`../assets/icons/${props.icon}`, import.meta.url)
 }
 
+function isCountry(str) {
+    return str.length == 2
+}
+
 </script>
 
 <template>
     <div id="info_container" :class="{ primary: accent }">
-        <img v-if="icon" class="icon" :src="getIconUrl()">
+        <img v-if="icon && !isCountry(icon)" class="icon" :src="getIconUrl()">
+        <span v-if="icon && isCountry(icon)" :class="'fi fi-' + icon.toLowerCase()"></span>
         <p>{{ text }}</p>
         <p class="legend">{{ legend }}</p>
     </div>
