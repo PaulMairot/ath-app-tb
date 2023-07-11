@@ -71,8 +71,9 @@ function capitalizeFirstLetter(str) {
         display: flex;
         flex-direction: row;
         flex-wrap: wrap;
-        justify-content: space-between;
+        justify-content:space-evenly;
         flex-grow: 1;
+        gap: 20px;
     }
 
     @media (max-width: 600px) {

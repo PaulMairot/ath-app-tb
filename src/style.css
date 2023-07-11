@@ -1,15 +1,4 @@
 :root {
-  --background: #1c1c1c;
-  --primary: #303030;
-  --header: #fafafa;
-  --text: #cecece;
-  --text_filter: invert(79%) sepia(0%) saturate(0%) hue-rotate(274deg) brightness(109%) contrast(85%);
-  --option: #a0a0a0;
-  --option_dark: #737373;
-  --accent: #c23a30;
-  --accent_filter: invert(27%) sepia(50%) saturate(4407%) hue-rotate(349deg) brightness(83%) contrast(80%);
-  --shadow: 0px 0px 4px rgba(0, 0, 0, 0.25);
-
   overflow-x: hidden;
 }
 

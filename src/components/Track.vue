@@ -1,15 +1,141 @@
 <script setup>
+import { ref } from 'vue';
 import InfoVertical from '../components/InfoVertical.vue';
+
+const props = defineProps({
+    athletes: Array,
+    trace: Boolean,
+    enableTrace: Boolean
+});
+
+function findAthlete(property, value) {
+    return props.athletes.find(athlete => {
+        return athlete[property] == value
+    })
+}
+
+
+let points =[];
+
+function getPointLine() {
+    let path = document.getElementById('path_ath1')
+    
+    
+    for (let i = 0; i < 21; i++) {
+      let pt = path.getPointAtLength(Math.floor(path.getTotalLength())*i/30);
+      pt.x = Math.round(pt.x);
+      pt.y = Math.round(pt.y);
+      
+      points.push(pt);
+      
+    }
+
+    console.table(points);
+}
+
+
+
+
+
+let selectedTime = ref("0.00");
+
+
+function defineTrace(positions) {
+    let path = "M"
+    positions.forEach(position => {
+        path += position.x + ' ' + position.y + ' ';
+    });
+
+    return path;
+}
+
+function findClosest(array, target) {
+    let left = 0,
+    right = array.length - 1;
+    while (left < right) {
+    if (Math.abs(array[left] - target) <= Math.abs(array[right] - target)) {
+        right--;
+    } else {
+        left++;
+    }
+    }
+    return array[left];
+};
+function formatTime(times) {
+    let formattedTimes = [];
+
+    times.forEach(time => {
+        formattedTimes.push(parseFloat(time));
+    });
+    
+    return formattedTimes
+}
+
+let timeList = formatTime(props.athletes[0].time)
+
+function changeTime(range) {
+
+    let circles = Object.values(document.getElementsByTagName('circle'));
+
+    let closestNumber = findClosest(timeList, range.value);
+    let index = timeList.indexOf(closestNumber);
+
+    selectedTime.value = String(closestNumber);
+
+    props.athletes.forEach(athlete => {
+        let positions = athlete.positions[index];
+        let circle = document.getElementById('circle_' + athlete.name);
+        circle.setAttributeNS(null, 'cx', positions.x);
+        circle.setAttributeNS(null, 'cy', positions.y);
+    });
+}
+
+function changeSelection(athlete) {
+    // Clear selection in athletes array
+    props.athletes.forEach(ath => {
+        ath.selected = false;
+    });
+
+    const index = props.athletes.findIndex((ath) => ath==findAthlete("name", athlete));
+    athlete = props.athletes[index];
+    athlete.selected = true;
+
+    // Update trace and circle
+    // Clear class circles and traces
+    let circles = Object.values(document.getElementsByTagName('circle'));
+    let traces = Object.values(document.getElementsByClassName('trace'));
+
+    for(let circle of circles) {
+        circle.classList.remove("selected");
+    }
+    for(let trace of traces) {
+        trace.classList.remove("selected");
+    }
+
+
+    let athlete_circle = document.getElementById('circle_'+athlete.name);
+    let athlete_trace = document.getElementById('trace_'+athlete.name);
+    
+    if(athlete_circle) athlete_circle.classList.add("selected");
+    if(athlete_trace) athlete_trace.classList.add("selected");
+    
+
+}
+
 </script>
 
 <template>
 
 <div id="track">
 
-    <svg id="track_svg" viewBox="0 0 500 260"
+    <svg id="track_svg" viewBox="0 0 500 260" 
     width="100%"
     height="100%"
     preserveAspectRatio="xMidYMid">
+
+        <!-- <g stroke-width="1.5px" fill="none" stroke="blue">
+            <path id="path_ath1" d="M 125 210 A 62.5 62.5 0 0 1 125 45"/>
+        </g> -->
 
         <g stroke-width="1px" fill="none">
         <path d="M 125 250 A 122.5 122.5 0 0 1 125 5"/>
@@ -25,7 +151,7 @@ import InfoVertical from '../components/InfoVertical.vue';
         <path d="M 45 245 L 375 245"/>
         </g>
         <g stroke-width="0.5px" fill="none">
-        <path id="path_ath1" d="M 125 240 A 107.5 107.5 0 0 1 125 15 M 125 15 L 375 15 M 375 15 A 112.5 112.5 0 0 1 375 240 M 45 240 L 375 240"/>
+        <path d="M 125 240 A 107.5 107.5 0 0 1 125 15 M 125 15 L 375 15 M 375 15 A 112.5 112.5 0 0 1 375 240 M 45 240 L 375 240"/>
         </g>
         <g stroke-width="0.5px" fill="none">
         <path d="M 125 235 A 100 100 0 0 1 125 20"/>
@@ -72,13 +198,28 @@ import InfoVertical from '../components/InfoVertical.vue';
         <path d="M 80 210 L 80 250" />
         </g>
 
+        <!-- Athletes circles -->
+        <circle  v-for="athlete in athletes" class="player_circle" :class="[(athlete.selected ? 'selected' : ''), (props.trace ? 'hidden': '')]" :id="'circle_'+athlete.name" :cx="athlete.positions[0].x" :cy="athlete.positions[0].y" r="5" />
+
+        <!-- Athletes traces-->
+        <path v-if="props.trace" class="trace" v-for="athlete in athletes" :class="athlete.selected ? 'selected' : ''" :id="'trace_'+athlete.name" :d="defineTrace(athlete.positions)"/>
+
     </svg>
-    <p class="track_info">Athlete Name</p>
-    <InfoVertical text='test' legend='legend'></InfoVertical>
+
+    <!-- <p class="track_info">Athlete Name</p> -->
+    <div v-if="enableTrace" class="track_info">
+        <select @change="changeSelection($event.target.value)">
+            <option disabled selected>Select an athlete</option>
+            <option v-for="athlete in athletes" :value="athlete.name">{{ athlete.name }}</option>
+        </select>
+    </div>
+
+    <InfoVertical v-if="props.trace" text='test' legend='legend'></InfoVertical>
+    <InfoVertical v-else :text='selectedTime' legend='Time'></InfoVertical>
 </div>
 
 <div class="slidecontainer">
-    <input type="range" min="1" max="100" value="20" class="slider" id="range">
+    <input v-show="!props.trace"  type="range" :min="timeList[0]" :max="timeList[timeList.length - 1]" :value="selectedTime" step="0.05" class="slider" id="range" @input="event => changeTime(event.srcElement)">
 </div>
 
 
@@ -88,6 +229,10 @@ import InfoVertical from '../components/InfoVertical.vue';
 
 <style scoped>
 
+
+
+
+
 #track {
     position: relative;
 }
@@ -96,12 +241,55 @@ g > path  {
     stroke: var(--option_dark);
 }
 
-p.track_info {
+circle {
+    fill: var(--option);
+}
+
+circle.selected {
+    fill: #C23A30;
+    stroke: var(--accent);
+    stroke-opacity: 40%;
+    stroke-width: 15px;
+    z-index: 10;
+} 
+
+circle.hidden {
+    fill: none;
+    stroke: none;
+} 
+
+path.trace {
+    fill:none
+}
+
+path.trace.selected {
+    stroke: var(--accent);
+    stroke-width: 1.2px;
+    stroke-linejoin: round;
+}
+
+.track_info {
     position: absolute;
-    top: 30%;
+    top: 38%;
     left: 50%;
     transform: translate(-50%, -50%);
 }
+
+
+
+select {
+    font-size: 18px;
+    text-align: center;
+    padding-right: 10px;
+    color: var(--text);
+    border: none;
+    background-color: var(--primary);
+}
+
+select:focus {
+    outline: none;
+}
+
 
 .slidecontainer {
     

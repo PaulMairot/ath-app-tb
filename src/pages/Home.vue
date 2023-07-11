@@ -8,6 +8,8 @@ import DefaultCard from '../components/DefaultCard.vue';
 import ChartCard from '../components/ChartCard.vue';
 import TrackCard from '../components/TrackCard.vue';
 
+import axios from "axios"
+
 let cardTestChart = [
     {
         "text":"28.8 km/h", 
@@ -86,7 +88,7 @@ let cardTestTrack = [
 <template>
     <PageHeader title="Home" :back_button='false'></PageHeader>
 
-    <TrackCard cardTitle="Rewind" :infos="cardTestTrack"></TrackCard>
+    <TrackCard cardTitle="Rewind" :infos="cardTestTrack" :enableTrace="true"></TrackCard>
 
     <ChartCard cardTitle="Speed" :infos="cardTestChart">tew</ChartCard>
     
@@ -125,34 +127,35 @@ let cardTestTrack = [
 </template>
 
 <style scoped>
+    
     .group_infos {
-        border-radius: 8px;
-        box-shadow: var(--shadow);
-        background-color: var(--primary);
-        padding: 10px 20px;
-        margin: 10px 0;
-        
-        max-width: 370px;
+        box-shadow: none;
+        background-color: transparent;
+        padding: 0;
+        max-width: 100%;
     }
 
     .group_infos > #container {
-        box-shadow: none;
-        border: 1px solid var(--option);
+        border-radius: 8px;
+        box-shadow: var(--shadow);
+        border: none;
     }
 
-    @media (max-width: 600px) {
+    @media (min-width: 600px) {
 
         .group_infos {
-            box-shadow: none;
-            background-color: transparent;
-            padding: 0;
-            max-width: 100%;
+            border-radius: 8px;
+            box-shadow: var(--shadow);
+            background-color: var(--primary);
+            padding: 10px 20px;
+            margin: 10px 0;
+            
+            max-width: 370px;
         }
 
         .group_infos > #container {
-            border-radius: 8px;
-            box-shadow: var(--shadow);
-            border: none;
+            box-shadow: none;
+            border: 1px solid var(--option);
         }
     }
 </style>
