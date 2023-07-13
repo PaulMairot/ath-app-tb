@@ -26,7 +26,7 @@ const props = defineProps({
 <style scoped>
     #container {
         background-color: var(--primary);
-        padding: 25px 40px 10px 40px;
+        padding: 25px 20px 10px 20px;
         border-radius: 8px;
         max-width: 370px;
         box-shadow: var(--shadow);

@@ -1,4 +1,6 @@
 <script setup>
+import axios from "axios"
+
 import PageHeader from '../components/PageHeader.vue';
 import CardHeader from '../components/CardHeader.vue';
 import EventCard from '../components/EventCard.vue';
@@ -8,7 +10,17 @@ import DefaultCard from '../components/DefaultCard.vue';
 import ChartCard from '../components/ChartCard.vue';
 import TrackCard from '../components/TrackCard.vue';
 
-import axios from "axios"
+import * as MeetingService from '../services/Meeting.js'
+import * as RaceService from '../services/Race.js'
+
+import { onMounted, ref } from 'vue';
+import { format, compareAsc } from 'date-fns'
+import SeeAllButton from "../components/SeeAllButton.vue";
+
+
+let upcomingMeetings = ref([]); 
+let pastMeeting = ref([]);
+let finishedRaces = ref([]);
 
 let cardTestChart = [
     {
@@ -83,11 +95,70 @@ let cardTestTrack = [
     }
 ]
 
+function formatEventDate(startDate, endDate) {
+    startDate = new Date(startDate);
+    endDate = new Date(endDate);
+
+    if (compareAsc(startDate, endDate) == 0) {
+        return format(startDate, 'd LLL yyyy').toUpperCase();
+    } else {
+        return (format(startDate, 'd') + '-' + format(endDate, 'd LLL yyyy')).toUpperCase();
+    }
+}
+
+onMounted(async ()=> {
+upcomingMeetings.value = await MeetingService.getUpcomingMeetings(format(new Date(), 'yyyy-MM-dd'), 4);
+pastMeeting.value = await MeetingService.getPastMeetings(format(new Date(), 'yyyy-MM-dd'), 4);
+
+finishedRaces.value = await RaceService.getFinishedRaces();
+console.log(finishedRaces.value);
+})
+
 </script>
 
-<template>
-    <PageHeader title="Home" :back_button='false'></PageHeader>
 
+<template>
+
+    <PageHeader title="Home" :back_button='false'></PageHeader>
+    <div id="content">
+        <div class="group_infos">
+            <CardHeader title="Latest races"></CardHeader>
+
+            <RaceCard v-for="race in finishedRaces" 
+                :title="race.discipline.distance + 'm ' + race.discipline.gender.toUpperCase()" 
+                :meeting="race.meeting.name" 
+                :link="'#/race?id=' + race.id" 
+                link_text="See results"></RaceCard>
+
+            <SeeAllButton></SeeAllButton>
+        </div>
+
+        <div class="group_infos">
+            <CardHeader title="Upcoming events"></CardHeader>
+
+            <EventCard v-for="meeting in upcomingMeetings" 
+                :title="meeting.name" 
+                :city=" meeting.city + ' (' + meeting.country.alpha3 + ')' " 
+                :date="formatEventDate(meeting.startDate, meeting.endDate)">
+            </EventCard>
+            
+            <SeeAllButton></SeeAllButton>
+        </div>
+
+        <div class="group_infos">
+            <CardHeader title="Past events"></CardHeader>
+            
+            <EventCard v-for="meeting in pastMeeting" 
+                :title="meeting.name" 
+                :city=" meeting.city + ' (' + meeting.country.alpha3 + ')' " 
+                :date="formatEventDate(meeting.startDate, meeting.endDate)">
+            </EventCard>
+            
+            <SeeAllButton></SeeAllButton>
+        </div>
+    </div>
+
+    <!--
     <TrackCard cardTitle="Rewind" :infos="cardTestTrack" :enableTrace="true"></TrackCard>
 
     <ChartCard cardTitle="Speed" :infos="cardTestChart">tew</ChartCard>
@@ -124,15 +195,20 @@ let cardTestTrack = [
         temperature="34"
         wind="+2">
     </RaceCardDetailled>
+    -->
 </template>
 
 <style scoped>
+
+    
     
     .group_infos {
         box-shadow: none;
         background-color: transparent;
         padding: 0;
         max-width: 100%;
+
+        flex-grow: 1
     }
 
     .group_infos > #container {
@@ -142,7 +218,11 @@ let cardTestTrack = [
     }
 
     @media (min-width: 600px) {
-
+        #content {
+            display: flex;
+            flex-direction: row;
+            gap: 20px
+        }
         .group_infos {
             border-radius: 8px;
             box-shadow: var(--shadow);

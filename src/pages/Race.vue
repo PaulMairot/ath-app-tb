@@ -6,6 +6,7 @@ const props = defineProps({
   live: Boolean
 })
 
+console.log("RACE");
 
 </script>
 
