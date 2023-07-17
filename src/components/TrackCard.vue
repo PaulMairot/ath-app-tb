@@ -3,17 +3,55 @@ import '../style.css';
 import InfoVertical from '../components/InfoVertical.vue';
 import CardHeader from './CardHeader.vue';
 import Track from './Track.vue';
-import { ref } from 'vue';
+import { onUpdated, ref } from 'vue';
 
 const props = defineProps({
   cardTitle: String,
-  infos: Array,
-  listTitle: String,
-  listInfos: Array,
+  positions: Array,
   enableTrace: Boolean
 })
 
+function formatAthletesArray(positions) {
+    const result = {};
+
+    positions.forEach((obj) => {
+        const athleteName = `${obj.athlete.firstName} ${obj.athlete.lastName}`;
+
+        if (!result[athleteName]) {
+        result[athleteName] = {
+            name: athleteName,
+            selected: false,
+            time: [],
+            positions: [],
+            rank: [],
+            speed: [],
+            gapToLeader: []
+        };
+        }
+
+        result[athleteName].time.push(obj.time);
+        result[athleteName].positions.push({ x: obj.coordinates[0], y: obj.coordinates[1] });
+        result[athleteName].rank.push(obj.rank);
+        result[athleteName].speed.push(obj.speed);
+        result[athleteName].gapToLeader.push(obj.gapToLeader);
+    });
+
+    return Object.values(result);
+}
+
 let trace = ref(false);
+let infos = ref([
+        {
+            "text": "-", 
+            "icon":"podium.svg", 
+            "legend":"Rank"
+        },
+        {
+            "text": "-", 
+            "icon":"speed.svg", 
+            "legend":"Speed"
+        }
+    ]);
 
 let athletes = [
     {
@@ -21,55 +59,39 @@ let athletes = [
         "selected": false,
         "time": [
             "0.00",
-            "1.08",
-            "2.17",
-            "3.26",
-            "3.78",
-            "4.34",
-            "5.43",
-            "6.52",
-            "7.14",
-            "7.60",
-            "8.69",
-            "9.78",
-            "10.23",
-            "10.86",
-            "11.95",
-            "13.04",
-            "14.12",
-            "15.21",
-            "16.30",
-            "16.80",
-            "17.38",
-            "18.47",
-            "19.56",
-            "20.64"
+            "1.00",
+            "1.50",
+            "2.50",
+            "3.00",
+            "4.50",
+            "5.50",
+            "6.00",
+            "6.50",
+            "7.00",
+            "8.00",
+            "8.50",
+            "9.00",
+            "9.50",
+            "10.50",
+            "11.50"
         ],
         "positions": [
-            {"x": 120, "y": 20},
-            {"x": 101, "y": 23},
-            {"x": 82, "y": 29},
-            {"x": 65, "y": 38},
-            {"x": 50, "y": 51},
-            {"x": 37, "y": 66},
-            {"x": 27, "y": 83},
-            {"x": 21, "y": 101},
-            {"x": 18, "y": 140},
-            {"x": 40, "y": 193},
-            {"x": 53, "y": 208},
-            {"x": 69, "y": 219},
-            {"x": 106, "y": 233},
-            {"x": 125, "y": 235},
-            {"x": 142, "y": 235},
-            {"x": 167, "y": 235},
-            {"x": 192, "y": 235},
-            {"x": 217, "y": 235},
-            {"x": 250, "y": 235},
-            {"x": 272, "y": 235},
-            {"x": 298, "y": 235},
-            {"x": 315, "y": 235},
-            {"x": 342, "y": 235},
-            {"x": 375, "y": 235},
+            {"x": 80, "y": 248},
+            {"x": 100, "y": 248},
+            {"x": 120, "y": 248},
+            {"x": 140, "y": 248},
+            {"x": 161, "y": 248},
+            {"x": 181, "y": 248},
+            {"x": 202, "y": 248},
+            {"x": 223, "y": 248},
+            {"x": 245, "y": 248},
+            {"x": 265, "y": 248},
+            {"x": 286, "y": 248},
+            {"x": 307, "y": 248},
+            {"x": 327, "y": 248},
+            {"x": 347, "y": 248},
+            {"x": 368, "y": 248},
+            {"x": 384, "y": 248}
         ]
     },
     {
@@ -77,42 +99,45 @@ let athletes = [
         "selected": false,
          "time": [
             "0.00",
-            "1.08",
-            "2.17",
-            "3.26",
-            "3.78",
-            "4.34",
-            "5.43",
-            "6.52",
-            "7.14",
-            "7.60",
-            "8.69",
-            "9.78",
-            "10.23",
-            "10.86",
-            "11.95",
-            "13.04",
-            "14.12",
-            "15.21",
-            "16.30",
-            "16.80",
-            "17.38",
-            "18.47",
-            "19.56",
-            "20.64"
+            "1.00",
+            "1.50",
+            "2.50",
+            "3.00",
+            "4.50",
+            "5.50",
+            "6.00",
+            "6.50",
+            "7.00",
+            "8.00",
+            "8.50",
+            "9.00",
+            "9.50",
+            "10.50",
+            "11.50"
         ],
         "positions": [
-            
-            
-
+            {"x": 80, "y": 242},
+            {"x": 100, "y": 243},
+            {"x": 120, "y": 243},
+            {"x": 140, "y": 242},
+            {"x": 160, "y": 242},
+            {"x": 181, "y": 242},
+            {"x": 200, "y": 242},
+            {"x": 221, "y": 243},
+            {"x": 242, "y": 243},
+            {"x": 262, "y": 243},
+            {"x": 282, "y": 242},
+            {"x": 304, "y": 242},
+            {"x": 325, "y": 242},
+            {"x": 345, "y": 242},
+            {"x": 366, "y": 243},
+            {"x": 382, "y": 242}
+            /*
             {"x": 140, "y": 42},
             {"x": 112, "y": 43},
             {"x": 91, "y": 52},
             {"x": 75, "y": 62},
-            
             {"x": 66, "y": 70},
-            
-
             {"x": 53, "y": 86},
             {"x": 50, "y": 94},
             {"x": 43, "y": 119},
@@ -120,9 +145,7 @@ let athletes = [
             {"x": 50, "y": 161},
             {"x": 58, "y": 176},
             {"x": 64, "y": 183},
-
             {"x": 90, "y": 205},
-
             {"x": 125, "y": 211},
             {"x": 141, "y": 211},
             {"x": 165, "y": 211},
@@ -134,9 +157,70 @@ let athletes = [
             {"x": 315, "y": 211},
             {"x": 342, "y": 211},
             {"x": 375, "y": 211},
+            */
+        ]
+    },
+    {
+        "name": "test3",
+        "selected": false,
+         "time": [
+            "0.00",
+            "1.00",
+            "1.50",
+            "2.50",
+            "3.00",
+            "4.50",
+            "5.50",
+            "6.00",
+            "6.50",
+            "7.00",
+            "8.00",
+            "8.50",
+            "9.00",
+            "9.50",
+            "10.50",
+            "11.50"
+        ],
+        "positions": [
+            {"x": 80, "y": 237},
+            {"x": 100, "y": 237},
+            {"x": 120, "y": 237},
+            {"x": 140, "y": 237},
+            {"x": 160, "y": 237},
+            {"x": 180, "y": 237},
+            {"x": 197, "y": 237},
+            {"x": 218, "y": 237},
+            {"x": 239, "y": 237},
+            {"x": 259, "y": 237},
+            {"x": 279, "y": 237},
+            {"x": 300, "y": 237},
+            {"x": 321, "y": 237},
+            {"x": 341, "y": 237},
+            {"x": 361, "y": 237},
+            {"x": 377, "y": 237}
+
         ]
     }
 ]
+
+function updateInfos(data) {
+    infos.value = [
+        {
+            "text": data.rank + 'th', 
+            "icon":"podium.svg", 
+            "legend":"Rank"
+        },
+        {
+            "text": data.speed + ' km/h', 
+            "icon":"speed.svg", 
+            "legend":"Speed"
+        }
+    ]
+}
+
+onUpdated(() => {
+    
+})
 
 </script>
 
@@ -157,7 +241,7 @@ let athletes = [
                 </div>
 
             </div>
-            <Track :athletes="athletes" :trace="trace" :enableTrace="props.enableTrace"></Track>
+            <Track :athletes="formatAthletesArray(positions)" :trace="trace" :enableTrace="props.enableTrace" @update="updateInfos"></Track>
         </div>
     </div>
 </template>
@@ -167,11 +251,14 @@ let athletes = [
         background-color: var(--primary);
         padding: 10px 20px;
         border-radius: 8px;
+        width: 880px;
         max-width: 680px;
         min-height: 330px;
         box-shadow: var(--shadow);
 
-        margin-bottom: 10px;
+        margin-top: 10px;
+
+        overflow-x: hidden;
 
     }
 
@@ -266,15 +353,17 @@ let athletes = [
 
 
 
-    @media (max-width: 600px) {
+    @media (max-width: 1000px) {
         #container {
+            width: 100%;
             max-width: 100%;
+            max-width: 680px;
         }
     }
 
-    @media (min-width: 600px) {
+    @media (min-width: 1000px) {
         #container > :nth-child(1) {
-            margin-bottom: 40px;
+            margin-bottom: 10px;
         }
         .infos {
             flex-direction: column;

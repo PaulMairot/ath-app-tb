@@ -5,6 +5,7 @@ import PageHeader from '../components/PageHeader.vue';
 import CardHeader from '../components/CardHeader.vue';
 import EventCard from '../components/EventCard.vue';
 import RaceCard from '../components/RaceCard.vue';
+import SeeAllButton from "../components/SeeAllButton.vue";
 import RaceCardDetailled from '../components/RaceCardDetailled.vue';
 import DefaultCard from '../components/DefaultCard.vue';
 import ChartCard from '../components/ChartCard.vue';
@@ -15,12 +16,14 @@ import * as RaceService from '../services/Race.js'
 
 import { onMounted, ref } from 'vue';
 import { format, compareAsc } from 'date-fns'
-import SeeAllButton from "../components/SeeAllButton.vue";
+
 
 
 let upcomingMeetings = ref([]); 
 let pastMeeting = ref([]);
+
 let finishedRaces = ref([]);
+let liveRaces = ref([]);
 
 let cardTestChart = [
     {
@@ -107,11 +110,11 @@ function formatEventDate(startDate, endDate) {
 }
 
 onMounted(async ()=> {
-upcomingMeetings.value = await MeetingService.getUpcomingMeetings(format(new Date(), 'yyyy-MM-dd'), 4);
-pastMeeting.value = await MeetingService.getPastMeetings(format(new Date(), 'yyyy-MM-dd'), 4);
+    upcomingMeetings.value = await MeetingService.getUpcomingMeetings(format(new Date(), 'yyyy-MM-dd'), 4);
+    pastMeeting.value = await MeetingService.getPastMeetings(format(new Date(), 'yyyy-MM-dd'), 4);
 
-finishedRaces.value = await RaceService.getFinishedRaces();
-console.log(finishedRaces.value);
+    finishedRaces.value = await RaceService.getRaces('finished', 4);
+    liveRaces.value = await RaceService.getRaces('live', 1)
 })
 
 </script>
@@ -120,21 +123,34 @@ console.log(finishedRaces.value);
 <template>
 
     <PageHeader title="Home" :back_button='false'></PageHeader>
+    
     <div id="content">
-        <div class="group_infos">
-            <CardHeader title="Latest races"></CardHeader>
+        <div class="column">
+            <div v-if="liveRaces.length" class="group_infos">
+                <CardHeader title="Live" :live="true"></CardHeader>
 
-            <RaceCard v-for="race in finishedRaces" 
-                :title="race.discipline.distance + 'm ' + race.discipline.gender.toUpperCase()" 
-                :meeting="race.meeting.name" 
-                :link="'#/race?id=' + race.id" 
-                link_text="See results"></RaceCard>
+                <RaceCard v-for="race in liveRaces" 
+                    :title="race.discipline.distance + 'm ' + race.discipline.gender.toUpperCase()" 
+                    :meeting="race.meeting.name" 
+                    :link="'#/race/' + race.id" 
+                    link_text="Follow live"></RaceCard>
+            </div>
 
-            <SeeAllButton></SeeAllButton>
+            <div class="group_infos">
+                <CardHeader title="Latest races" :live="false"></CardHeader>
+
+                <RaceCard v-for="race in finishedRaces" 
+                    :title="race.discipline.distance + 'm ' + race.discipline.gender.toUpperCase()" 
+                    :meeting="race.meeting.name" 
+                    :link="'#/race/' + race.id" 
+                    link_text="See results"></RaceCard>
+
+                <SeeAllButton></SeeAllButton>
+            </div>
         </div>
 
         <div class="group_infos">
-            <CardHeader title="Upcoming events"></CardHeader>
+            <CardHeader title="Upcoming events" :live="false"></CardHeader>
 
             <EventCard v-for="meeting in upcomingMeetings" 
                 :title="meeting.name" 
@@ -146,7 +162,7 @@ console.log(finishedRaces.value);
         </div>
 
         <div class="group_infos">
-            <CardHeader title="Past events"></CardHeader>
+            <CardHeader title="Past events" :live="false"></CardHeader>
             
             <EventCard v-for="meeting in pastMeeting" 
                 :title="meeting.name" 
@@ -215,6 +231,12 @@ console.log(finishedRaces.value);
         border-radius: 8px;
         box-shadow: var(--shadow);
         border: none;
+    }
+
+    .column {
+        display: flex;
+        flex-direction: column;
+        
     }
 
     @media (min-width: 600px) {

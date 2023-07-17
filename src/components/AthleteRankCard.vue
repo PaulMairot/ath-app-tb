@@ -9,8 +9,8 @@ const props = defineProps({
   firstName: String,
   nationality: String,
   time: String,
-  rank: String,
-  mention: String
+  rank: Number,
+  mentions: Array
 })
 
 /* function getRankIcon() {
@@ -31,12 +31,12 @@ function capitalizeWord(str) {
     return str.toUpperCase();
 }
 
-function getRankIcon(rank) {
-    rank = rank.toLowerCase();
+function getRankIcon(rank, mention) {
     if(!isNaN(rank) && !isNaN(parseFloat(rank))) {
         return new URL(`../assets/icons/number_${rank}.svg`, import.meta.url)
     } else {
-        return new URL(`../assets/icons/${rank}.svg`, import.meta.url)
+        mention = mention[0].toLowerCase();
+        return new URL(`../assets/icons/${mention}.svg`, import.meta.url)
     }
 }
 
@@ -46,15 +46,15 @@ function getRankIcon(rank) {
 <template>
     <div id="container">
         <div class="rank">
-            <img :src="getRankIcon(rank)">
+            <img :src="getRankIcon(rank, mentions)">
         </div>
         <div class="athlete_infos">
             <div class="row">
                 <h2>{{ capitalizeWord(lastName) + " " + capitalizeFirstLetters(firstName)}}</h2>
             </div>
             <div class="row">
-                <Info class="infoComponent" :text='time' icon="chrono.svg" :accent='true'></Info>
-                <p>{{ mention }}</p>
+                <Info v-if="time" class="infoComponent" :text='time' icon="chrono.svg" :accent='true'></Info>
+                <p v-for="mention in props.mentions">{{ mention }}</p>
                 <span :class="'fi fi-' + nationality.toLowerCase()"></span>
             </div>
         </div>
@@ -66,7 +66,7 @@ function getRankIcon(rank) {
         background-color: var(--primary);
         padding: 8px;
         border-radius: 8px;
-        max-width: 330px;
+        max-width: 370px;
         box-shadow: var(--shadow);
 
         margin-bottom: 10px;

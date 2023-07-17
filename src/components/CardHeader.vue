@@ -2,21 +2,38 @@
 import '../style.css';
 
 const props = defineProps({
-  title: String
+  title: String,
+  live: Boolean
 })
 
 </script>
 
 <template>
-    <h2>{{ title }}</h2>
-    
+    <div class="header">
+        <h2>{{ title }}</h2>
+        <img :class="live ? 'visible' : 'hidden'" id="live_indicator" src="../assets/icons/live.svg">
+    </div>
 </template>
 
 <style scoped>
 
+.header {
+    display: flex;
+}
+
 h2 {
     width: 100%;
     margin: 0 0 15px 0;
+}
+
+#live_indicator {
+    width: 32px;
+    height: 32px;
+    filter: var(--accent_filter);
+}
+
+.hidden {
+    display: none;
 }
 
 @media (max-width: 600px) {

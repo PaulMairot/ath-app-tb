@@ -11,13 +11,20 @@ const props = defineProps({
   time: String,
   location: String,
   city: String,
-  condition: String,
-  temperature: String,
-  wind: String
+  conditions: String,
+  temperature: Number,
+  wind: Number
 })
 
 function capitalizeFirstLetter(str) {
     return str.charAt(0).toUpperCase() + str.slice(1);
+}
+
+function formatTime(time) {
+    if (time.length > 5) {
+        return time.substring(0, 5)
+    }
+    return time
 }
 
 </script>
@@ -31,14 +38,14 @@ function capitalizeFirstLetter(str) {
         </div>
         <div class="infos" v-if="!title">
             <div class="col">
-                <Info :text='date' icon="calendar.svg"></Info>
-                <Info :text='location' icon="location.svg"></Info>
-                <Info :text="temperature + '°C ' + capitalizeFirstLetter(condition)" :icon="condition + '.svg'"></Info>
+                <Info v-if="date" :text='date' icon="calendar.svg"></Info>
+                <Info v-if="location" :text='location' icon="location.svg"></Info>
+                <Info v-if="temperature" :text="temperature + '°C ' + capitalizeFirstLetter(conditions)" :icon="conditions + '.svg'"></Info>
             </div>
             <div class="col">
-                <Info :text='time' icon="time.svg"></Info>
-                <Info :text='city' icon="calendar.svg"></Info>
-                <Info :text="wind + ' km/h'" icon="wind.svg"></Info>
+                <Info v-if="time" :text='formatTime(time)' icon="time.svg"></Info>
+                <Info v-if="city" :text='city' icon="city.svg"></Info>
+                <Info v-if="wind" :text="wind + ' km/h'" icon="wind.svg"></Info>
             </div>            
         </div>
     </div>
@@ -70,10 +77,9 @@ function capitalizeFirstLetter(str) {
     .infos {
         display: flex;
         flex-direction: row;
-        flex-wrap: wrap;
         justify-content:space-evenly;
         flex-grow: 1;
-        gap: 20px;
+        gap: 8px;
     }
 
     @media (max-width: 600px) {

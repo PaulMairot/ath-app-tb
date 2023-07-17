@@ -70,6 +70,13 @@ a {
         padding: 0 2px;
     }
 
+
+    h1 {
+        text-align: center;
+        margin-left: -40px;
+        flex-grow: 2;
+    }
+
     #back_button {
         margin: 0;
     }

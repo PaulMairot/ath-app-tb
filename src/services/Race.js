@@ -1,23 +1,45 @@
 import axios from "axios"
 
-export async function getAllRaces(limit) {
+
+export async function getRaces(state, limit) {
   if (!limit) limit = 0;
-  try{
-      const res = await axios.get('http://localhost:3000/races?limit=' + limit);
-      return res.data;
 
-    }catch(err){
+  let url ='http://localhost:3000/races?limit=' + limit
 
+  if (state) {
+    url += '&state=' + state
+  }
+
+    const res = await axios.get(url, { validateStatus: false });
+    if (res.status != 404) {
+      return res.data
+    } else {
+      return []
     }
 }
 
-export async function getFinishedRaces(limit) {
-  if (!limit) limit = 0;
-  try{
-      const res = await axios.get('http://localhost:3000/races?state=finished&limit=' + limit);
-      return res.data;
+export async function getRaceById(id) {
 
-    }catch(err){
+  let url ='http://localhost:3000/races/' + id
 
+    const res = await axios.get(url, { validateStatus: false });
+    if (res.status != 404) {
+      return res.data
+    } else {
+      return []
     }
+     
+}
+
+export async function getRacePositions(id) {
+
+  let url ='http://localhost:3000/positions?race=' + id
+
+    const res = await axios.get(url, { validateStatus: false });
+    if (res.status != 404) {
+      return res.data
+    } else {
+      return []
+    }
+     
 }

@@ -1,12 +1,16 @@
 <script setup>
-import { ref } from 'vue';
+import { onUpdated, ref } from 'vue';
 import InfoVertical from '../components/InfoVertical.vue';
+import { format } from 'date-fns'
 
 const props = defineProps({
     athletes: Array,
     trace: Boolean,
     enableTrace: Boolean
 });
+
+const emit = defineEmits(['update'])
+
 
 function findAthlete(property, value) {
     return props.athletes.find(athlete => {
@@ -33,11 +37,7 @@ function getPointLine() {
     console.table(points);
 }
 
-
-
-
-
-let selectedTime = ref("0.00");
+let selectedTime = ref(0);
 
 
 function defineTrace(positions) {
@@ -61,21 +61,49 @@ function findClosest(array, target) {
     }
     return array[left];
 };
+
 function formatTime(times) {
     let formattedTimes = [];
-
+    
     times.forEach(time => {
-        formattedTimes.push(parseFloat(time));
+        let timeArray = time.split(/[:.]/g);
+        time = format(new Date(1970, 1, 1, timeArray[0], timeArray[1], timeArray[2], timeArray[3]), "HHmmssSSS");
+        formattedTimes.push(parseInt(time, 10));
     });
     
-    return formattedTimes
+    return formattedTimes;
 }
 
-let timeList = formatTime(props.athletes[0].time)
+function formatDisplayTime(time) {
+    time = time.toString().padStart(9, '0') 
+
+    time = time.slice(0, 2) + ":" + time.slice(2,4) + ":" + time.slice(4,6) + "." + time.slice(6,9);
+
+    if (/00/.test(time.slice(0,2)) && /00/.test(time.slice(3,5))) {
+        time = time.substring(6);
+    } else if (/00/.test(time.slice(0,2))) {
+        time = time.substring(3);
+    }
+
+    return time
+}
+
+let timeList = ref([])
+
+function emitInfos(athlete) {
+    if (athlete) {
+        let closestNumber = findClosest(timeList, document.getElementById("range").value);
+
+        emit('update', {
+            'athlete': athlete.name,
+            'rank': athlete.rank[timeList.indexOf(closestNumber)],
+            'speed': athlete.speed[timeList.indexOf(closestNumber)],
+            'gapToLeader': athlete.gapToLeader[timeList.indexOf(closestNumber)]
+        })
+    }
+}
 
 function changeTime(range) {
-
-    let circles = Object.values(document.getElementsByTagName('circle'));
 
     let closestNumber = findClosest(timeList, range.value);
     let index = timeList.indexOf(closestNumber);
@@ -87,8 +115,17 @@ function changeTime(range) {
         let circle = document.getElementById('circle_' + athlete.name);
         circle.setAttributeNS(null, 'cx', positions.x);
         circle.setAttributeNS(null, 'cy', positions.y);
+
     });
+
+        const athlete = findAthlete("name", document.getElementById("athlete_select").value);
+
+        emitInfos(athlete)
+
+    
 }
+
+
 
 function changeSelection(athlete) {
     // Clear selection in athletes array
@@ -98,7 +135,7 @@ function changeSelection(athlete) {
 
     const index = props.athletes.findIndex((ath) => ath==findAthlete("name", athlete));
     athlete = props.athletes[index];
-    athlete.selected = true;
+    props.athletes[index].selected = true;
 
     // Update trace and circle
     // Clear class circles and traces
@@ -118,9 +155,17 @@ function changeSelection(athlete) {
     
     if(athlete_circle) athlete_circle.classList.add("selected");
     if(athlete_trace) athlete_trace.classList.add("selected");
-    
 
+    emitInfos(athlete);
 }
+
+onUpdated(() => {
+
+    if (props.athletes[0]) {
+        timeList = formatTime(props.athletes[0].time);
+    }
+
+})
 
 </script>
 
@@ -202,20 +247,20 @@ function changeSelection(athlete) {
         <circle  v-for="athlete in athletes" class="player_circle" :class="[(athlete.selected ? 'selected' : ''), (props.trace ? 'hidden': '')]" :id="'circle_'+athlete.name" :cx="athlete.positions[0].x" :cy="athlete.positions[0].y" r="5" />
 
         <!-- Athletes traces-->
-        <path v-if="props.trace" class="trace" v-for="athlete in athletes" :class="athlete.selected ? 'selected' : ''" :id="'trace_'+athlete.name" :d="defineTrace(athlete.positions)"/>
+        <path v-show="props.trace" class="trace" v-for="athlete in athletes" :class="athlete.selected ? 'selected' : ''" :id="'trace_'+athlete.name" :d="defineTrace(athlete.positions)"/>
 
     </svg>
 
     <!-- <p class="track_info">Athlete Name</p> -->
     <div v-if="enableTrace" class="track_info">
-        <select @change="changeSelection($event.target.value)">
+        <select id="athlete_select" @change="changeSelection($event.target.value)">
             <option disabled selected>Select an athlete</option>
             <option v-for="athlete in athletes" :value="athlete.name">{{ athlete.name }}</option>
         </select>
     </div>
 
     <InfoVertical v-if="props.trace" text='test' legend='legend'></InfoVertical>
-    <InfoVertical v-else :text='selectedTime' legend='Time'></InfoVertical>
+    <InfoVertical v-else :text='formatDisplayTime(selectedTime)' legend='Time'></InfoVertical>
 </div>
 
 <div class="slidecontainer">
@@ -331,7 +376,7 @@ select:focus {
     box-shadow: -407px 0 0 400px #C23A3060;
 }
 
-@media (min-width: 600px) {
+@media (min-width: 1000px) {
         .slidecontainer {
             transform: translateY(150%) rotate(-90deg);
         }
