@@ -6,7 +6,7 @@ import Track from './Track.vue';
 import { onUpdated, ref } from 'vue';
 
 const props = defineProps({
-  cardTitle: String,
+  card_title: String,
   positions: Array,
   enableTrace: Boolean
 })
@@ -226,7 +226,7 @@ onUpdated(() => {
 
 <template>
     <div id="container">
-        <CardHeader :title="cardTitle"></CardHeader>
+        <CardHeader :title="card_title"></CardHeader>
         <div id="content">
             <div class="infos">
                 <InfoVertical v-for="info in infos" :text='info.text' :icon='info.icon' :legend='info.legend' :accent='info.accent'></InfoVertical>
@@ -255,9 +255,6 @@ onUpdated(() => {
         max-width: 680px;
         min-height: 330px;
         box-shadow: var(--shadow);
-
-        margin-top: 10px;
-
         overflow-x: hidden;
 
     }

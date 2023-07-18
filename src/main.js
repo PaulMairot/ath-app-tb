@@ -7,11 +7,13 @@ import { createRouter, createWebHashHistory} from 'vue-router'
 
 import Home from './pages/Home.vue'
 import Race from './pages/Race.vue';
+import Performance from './pages/Performance.vue';
 
 
 const routes = [
   { path: '/', component: Home },
-  { path: '/race/:id', component: Race }
+  { path: '/race/:id', component: Race },
+  { path: '/performance/:id', component: Performance }
 ]
 const router = createRouter({
     // 4. Provide the history implementation to use. We are using the hash history for simplicity here.

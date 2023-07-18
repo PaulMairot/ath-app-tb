@@ -10,7 +10,8 @@ const props = defineProps({
   nationality: String,
   time: String,
   rank: Number,
-  mentions: Array
+  mentions: Array,
+  link: String
 })
 
 /* function getRankIcon() {
@@ -44,7 +45,7 @@ function getRankIcon(rank, mention) {
 </script>
 
 <template>
-    <div id="container">
+    <a :href="link" id="container">
         <div class="rank">
             <img :src="getRankIcon(rank, mentions)">
         </div>
@@ -58,7 +59,7 @@ function getRankIcon(rank, mention) {
                 <span :class="'fi fi-' + nationality.toLowerCase()"></span>
             </div>
         </div>
-    </div>
+    </a>
 </template>
 
 <style scoped>

@@ -20,46 +20,42 @@ const props = defineProps ({
     yAxisLabel: String,
     xMin: Number,
     xMax: Number,
-    data: Object
+    xTick: Number,
+    yTick: Number,
+    data: Array
 })
+
+let datas;
+
+if (props.data) {
+
+  datas = props.data.map(item => {
+    const keys = Object.keys(item);
+
+    let updatedItem = {};
+
+    Object.keys(item).forEach(key => {
+      updatedItem["x"] = item[keys[0]];
+      updatedItem["y"] = item[keys[1]];
+    });
+
+    return updatedItem;
+  })
+
+}
+
+const aspectRatioValue = props.yTick >= 100 ? 1.2 : 1.5
 
 const accentColor = getComputedStyle(document.documentElement).getPropertyValue('--accent');
 const optionColor = getComputedStyle(document.documentElement).getPropertyValue('--option') + "70";
-const delayBetweenPoints = 1.5;
-const previousY = (ctx) => ctx.index === 0 ? ctx.chart.scales.y.getPixelForValue(100) : ctx.chart.getDatasetMeta(ctx.datasetIndex).data[ctx.index - 1].getProps(['y'], true).y;
-const animation = {
-  x: {
-    type: 'number',
-    easing: 'linear',
-    duration: delayBetweenPoints,
-    from: NaN,
-    delay(ctx) {
-      if (ctx.type !== 'data' || ctx.xStarted) {
-        return 0;
-      }
-      ctx.xStarted = true;
-      return ctx.index * delayBetweenPoints;
-    }
-  }, 
-  y: {
-    type: 'number',
-    easing: 'linear',
-    duration: delayBetweenPoints,
-    from: previousY,
-    delay(ctx) {
-      if (ctx.type !== 'data' || ctx.yStarted) {
-        return 0;
-      }
-      ctx.yStarted = true;
-      return ctx.index * delayBetweenPoints;
-    }
-  }
-};
 
 const graphOption = {
-        //animation,
+      animation: {
+            duration: 0
+        },
         responsive: true,
         maintainAspectRatio: true,
+        aspectRatio: aspectRatioValue,
         elements: {
           point:{
               radius: 0
@@ -81,7 +77,7 @@ const graphOption = {
             min: props.xMin,
             max: props.xMax,
             ticks: {
-              stepSize: 100
+              stepSize: props.xTick
             },
             grid: {
                 color: optionColor
@@ -95,17 +91,19 @@ const graphOption = {
             type: 'linear',
             min: 0,
             ticks: {
-              stepSize: 100
+              stepSize: props.yTick
             },
             grid: {
                 color: optionColor
             }
           },
-        },
-      }
-const graphData = {
+        }
+}
+
+
+let graphData = {
         datasets: [{
-        data: props.data.Value,
+        data: datas,
         borderColor: accentColor,
         fill: {
                 target: 'origin',
@@ -124,15 +122,15 @@ const graphData = {
         }]
 }
 
-
 </script>
 
 <template>
     <Line id="lineChart" :data="graphData" :options="graphOption" ref="line"/>
 </template>
 
+
 <style scoped>
     #lineChart {
-        width: 80vw;
+        width: 100%
     }
 </style>

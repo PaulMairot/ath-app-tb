@@ -123,7 +123,7 @@ onMounted(async ()=> {
 <template>
 
     <PageHeader title="Home" :back_button='false'></PageHeader>
-    
+
     <div id="content">
         <div class="column">
             <div v-if="liveRaces.length" class="group_infos">
@@ -175,12 +175,12 @@ onMounted(async ()=> {
     </div>
 
     <!--
-    <TrackCard cardTitle="Rewind" :infos="cardTestTrack" :enableTrace="true"></TrackCard>
+    <TrackCard card_title="Rewind" :infos="cardTestTrack" :enableTrace="true"></TrackCard>
 
-    <ChartCard cardTitle="Speed" :infos="cardTestChart">tew</ChartCard>
+    <ChartCard card_title="Speed" :infos="cardTestChart">tew</ChartCard>
     
-    <DefaultCard cardTitle="About the athlete" :infos="cardTestAthlete" listTitle="Latest results" :listInfos="cardTestList"></DefaultCard>
-    <DefaultCard cardTitle="Highlights" :infos="cardTestInfos"></DefaultCard>
+    <DefaultCard card_title="About the athlete" :infos="cardTestAthlete" listTitle="Latest results" :listInfos="cardTestList"></DefaultCard>
+    <DefaultCard card_title="Highlights" :infos="cardTestInfos"></DefaultCard>
     
     <div class="group_infos">
         <CardHeader title="All races"></CardHeader>

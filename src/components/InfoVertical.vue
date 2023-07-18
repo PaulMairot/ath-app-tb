@@ -2,7 +2,7 @@
 import '../style.css';
 
 const props = defineProps({
-  text: String,
+  text: [String, Number],
   icon: String,
   legend: String,
   accent: Boolean
@@ -67,13 +67,20 @@ function isCountry(str) {
         animation: slide 0.2s ease-out both;
     }
 
+    #info_container.primary > p:nth-of-type(1){
+        font-family: Satoshi-Bold;
+        color: var(--accent);
+    }
+
     p.legend {
         color: var(--option);
         font-size: 14px;
     }
 
-    #info_container.primary > p{
-        color: var(--accent);
+    .fi {
+
+        width: 25px;
+        line-height: 1.5em;
     }
     
 

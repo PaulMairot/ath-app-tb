@@ -3,9 +3,12 @@ import '../style.css';
 import InfoVertical from '../components/InfoVertical.vue';
 import ResultList from '../components/ResultList.vue';
 import CardHeader from './CardHeader.vue';
+import { onBeforeMount, ref, toRaw, watchEffect } from 'vue';
+import * as RaceService from '../services/Race.js'
+
 
 const props = defineProps({
-  cardTitle: String,
+  card_title: String,
   infos: Array,
   listTitle: String,
   listInfos: Array
@@ -15,13 +18,15 @@ const props = defineProps({
 
 <template>
     <div id="container">
-        <CardHeader :title="cardTitle"></CardHeader>
+        <CardHeader :title="card_title"></CardHeader>
         <div class="infos">
             <InfoVertical v-for="info in infos" :text='info.text' :icon='info.icon' :legend='info.legend' :accent='info.accent'></InfoVertical>
         </div>
-        <ResultList v-if="listInfos" :title="listTitle" :results="listInfos"></ResultList>
+        <ResultList v-if="listInfos" :title="listTitle" :results="listInfos" :key="listInfos.meeting"></ResultList>
     </div>
 </template>
+
+
 
 <style scoped>
     #container {
@@ -30,8 +35,6 @@ const props = defineProps({
         border-radius: 8px;
         max-width: 370px;
         box-shadow: var(--shadow);
-
-        margin-bottom: 10px;
     }
 
     .title {

@@ -1,7 +1,10 @@
 <script setup>
 import '../style.css';
 
+import CardHeader from '../components/cardHeader.vue'
+
 const props = defineProps({
+  card_title: String,
   title: String,
   meeting: String,
   time: String,
@@ -13,6 +16,8 @@ const props = defineProps({
 
 <template>
     <div id="container">
+        <CardHeader v-if="card_title" :title="card_title"></CardHeader>
+
         <div class="title">
             <img class="icon accent" src="../assets/icons/shoe.svg">
             <p class="accent">{{ title }}</p>
@@ -27,7 +32,7 @@ const props = defineProps({
                 <p>{{ link_text }}</p>
                 <img class="link_icon" src="../assets/icons/arrow_right.svg">
             </a>
-            <div class="info" v-else>
+            <div class="info" v-else-if="!link && time">
                 <img class="icon" src="../assets/icons/time.svg">
                 <p>{{ time }}</p>
             </div>
@@ -43,10 +48,10 @@ const props = defineProps({
         border-radius: 8px;
         box-shadow: var(--shadow);
 
+        min-width: 270px;
         max-width: 370px;
 
-        padding: 15px 40px 10px 40px;
-        margin-bottom: 10px;
+        padding: 10px 20px 10px 20px;
 
         display: flex;
         flex-direction: column;

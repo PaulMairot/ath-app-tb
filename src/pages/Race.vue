@@ -55,18 +55,22 @@ function formatEventDate(startDate, endDate) {
     :back_button='true' 
     :live='race.state == "live"'>
   </PageHeader>
+
   <div id="content">
 
     <div class="column">
       <div class="group_infos">
+
         <athleteRankCard v-for="performance in race.performances" 
           :lastName="performance.athlete.lastName" 
           :firstName="performance.athlete.firstName" 
           :nationality="performance.athlete.nationality.alpha2"
           :time="performance.result" 
           :rank="performance.rank" 
-          :mentions="performance.mention">
+          :mentions="performance.mention"
+          :link="'#/performance/' + performance.id">
         </athleteRankCard>
+
       </div>
     </div>
     <div class="column">
@@ -81,7 +85,7 @@ function formatEventDate(startDate, endDate) {
             :wind="race.windSpeed">
       </RaceCardDetailled>
 
-      <TrackCard :cardTitle="race.state == 'finished' ? 'Rewind' : 'Live'" :enableTrace="race.state == 'finished'" :positions="positions"></TrackCard>
+      <TrackCard :card_title="race.state == 'finished' ? 'Rewind' : 'Live'" :enableTrace="race.state == 'finished'" :positions="positions"></TrackCard>
       
     </div>
   </div>
@@ -115,7 +119,6 @@ export default {
         box-shadow: none;
         background-color: transparent;
         padding: 0;
-        min-width: 370px;
         max-width: 100%;
 
         flex-grow: 1
@@ -130,6 +133,7 @@ export default {
     .column {
         display: flex;
         flex-direction: column;
+        gap: 20px;
         
     }
 

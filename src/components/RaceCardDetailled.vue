@@ -58,8 +58,6 @@ function formatTime(time) {
         border-radius: 8px;
         max-width: 370px;
         box-shadow: var(--shadow);
-
-        margin-bottom: 10px;
     }
 
     .title {

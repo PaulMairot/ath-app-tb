@@ -1,4 +1,5 @@
 <script setup>
+import { computed, inject, onBeforeMount, onMounted, reactive, ref, toRaw, toRef, watch, watchEffect, watchPostEffect } from 'vue';
 import '../style.css';
 
 const props = defineProps({
@@ -8,14 +9,16 @@ const props = defineProps({
 
 </script>
 
+
+
 <template>
     <div id="info_container">
         <h2>{{ title }}</h2>
         <ul>
-            <li v-for="result in results">
+            <li v-for="result in results" :key="result">
                  <span>{{ result.meeting }}</span>
                  <span>{{ result.date }}</span>
-                 <span>{{ result.race }}</span>
+                 <span>{{ result.discipline }}</span>
                  <span class="primary">{{ result.result }}</span>
             </li>
         </ul>
@@ -58,6 +61,10 @@ const props = defineProps({
 
     span:nth-of-type(1) {
         flex: 0.4;
+        max-width: 120px;
+        overflow: hidden;
+        white-space: nowrap;
+        text-overflow: ellipsis;
     }
 
     span:nth-of-type(2) {
