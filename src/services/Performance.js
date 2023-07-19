@@ -12,7 +12,19 @@ export async function getPerformance(athlete_id, race_id) {
       } else {
         return []
       }
-  }
+}
+
+export async function getPerformanceByRace(race_id) {
+
+    let url = 'http://localhost:3000/performances?race=' + race_id;
+  
+      const res = await axios.get(url);
+      if (res.status != 404) {
+        return res.data
+      } else {
+        return []
+      }
+}
 
 export async function getPerformanceById(id) {
 
@@ -45,7 +57,7 @@ export async function getLatestPerformance(athlete_id, limit) {
             "result": performance.result || ""
           })
         });
-        console.log(races);
+
         return races
       } else {
         return []

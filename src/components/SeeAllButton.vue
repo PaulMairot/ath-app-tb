@@ -7,7 +7,7 @@ const props = defineProps({
 </script>
 
 <template>
-    <a>
+    <a :href="link">
         <p>See all</p>
         <img class="icon" src='../assets/icons/arrow_right.svg'>
     </a>

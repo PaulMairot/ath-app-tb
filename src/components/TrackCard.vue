@@ -8,24 +8,36 @@ import { onUpdated, ref } from 'vue';
 const props = defineProps({
   card_title: String,
   positions: Array,
-  enableTrace: Boolean
-})
+  enableTrace: Boolean,
+  selectedAthleteId: String
+});
+
+function getPerformance() {
+    
+}
+
 
 function formatAthletesArray(positions) {
+
+    
     const result = {};
 
-    positions.forEach((obj) => {
+    positions.forEach(async (obj) => {
         const athleteName = `${obj.athlete.firstName} ${obj.athlete.lastName}`;
-
+        
         if (!result[athleteName]) {
         result[athleteName] = {
+            id: obj.athlete.id,
             name: athleteName,
-            selected: false,
+            race: obj.race,
+            lane: obj.race.performances.find(perf => { return perf.athlete === obj.athlete.id }).lane || null,
+            selected: obj.athlete.id === props.selectedAthleteId ? true : false,
             time: [],
             positions: [],
             rank: [],
             speed: [],
-            gapToLeader: []
+            gapToLeader: [],
+            distanceRunned: [],
         };
         }
 
@@ -34,6 +46,7 @@ function formatAthletesArray(positions) {
         result[athleteName].rank.push(obj.rank);
         result[athleteName].speed.push(obj.speed);
         result[athleteName].gapToLeader.push(obj.gapToLeader);
+        result[athleteName].distanceRunned.push(obj.distanceRunned || null) ;
     });
 
     return Object.values(result);
@@ -241,7 +254,7 @@ onUpdated(() => {
                 </div>
 
             </div>
-            <Track :athletes="formatAthletesArray(positions)" :trace="trace" :enableTrace="props.enableTrace" @update="updateInfos"></Track>
+            <Track :athletes="formatAthletesArray(positions)" :trace="trace" :enableTrace="props.enableTrace" @update="updateInfos" :selectedAthleteId="selectedAthleteId"></Track>
         </div>
     </div>
 </template>

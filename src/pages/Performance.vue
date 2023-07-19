@@ -100,7 +100,7 @@ function formatEventDate(startDate, endDate) {
             </DefaultCard>
         </div>
 
-        <TrackCard card_title="Position" :enableTrace="true" :positions="positions"></TrackCard>
+        <TrackCard card_title="Position" :enableTrace="true" :positions="positions" :selectedAthleteId="performance.athlete.id"></TrackCard>
     </div>
     
 

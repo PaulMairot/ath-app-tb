@@ -6,7 +6,8 @@ import { format } from 'date-fns'
 const props = defineProps({
     athletes: Array,
     trace: Boolean,
-    enableTrace: Boolean
+    enableTrace: Boolean,
+    selectedAthleteId: String
 });
 
 const emit = defineEmits(['update'])
@@ -20,6 +21,12 @@ function findAthlete(property, value) {
 
 
 let points =[];
+
+let athletePerformance = ref(null)
+let traceInfo = ref({
+    "text": "-",
+    "legend": "Runned Distance"
+});
 
 function getPointLine() {
     let path = document.getElementById('path_ath1')
@@ -38,6 +45,7 @@ function getPointLine() {
 }
 
 let selectedTime = ref(0);
+
 
 
 function defineTrace(positions) {
@@ -115,13 +123,17 @@ function changeTime(range) {
         let circle = document.getElementById('circle_' + athlete.name);
         circle.setAttributeNS(null, 'cx', positions.x);
         circle.setAttributeNS(null, 'cy', positions.y);
-
     });
 
-        const athlete = findAthlete("name", document.getElementById("athlete_select").value);
+    let athlete;
 
-        emitInfos(athlete)
-
+    if (props.selectedAthleteId) {
+        athlete = findAthlete("id", props.selectedAthleteId);
+    } else if (document.getElementById('athlete_select').value) {
+        athlete = findAthlete("name", document.getElementById('athlete_select').value);
+    }
+    
+    emitInfos(athlete);
     
 }
 
@@ -133,9 +145,8 @@ function changeSelection(athlete) {
         ath.selected = false;
     });
 
-    const index = props.athletes.findIndex((ath) => ath==findAthlete("name", athlete));
-    athlete = props.athletes[index];
-    props.athletes[index].selected = true;
+    athlete = findAthlete("name", athlete);
+    athlete.selected = true;
 
     // Update trace and circle
     // Clear class circles and traces
@@ -157,13 +168,24 @@ function changeSelection(athlete) {
     if(athlete_trace) athlete_trace.classList.add("selected");
 
     emitInfos(athlete);
+    
 }
 
 onUpdated(() => {
 
-    if (props.athletes[0]) {
+    if (props.athletes[0] && timeList.value) {
         timeList = formatTime(props.athletes[0].time);
     }
+
+    if (props.selectedAthleteId) {
+        athletePerformance.value = findAthlete('id', props.selectedAthleteId)
+        if (athletePerformance.value != undefined) {
+            traceInfo.value.text = athletePerformance.value.distanceRunned[athletePerformance.value.distanceRunned.length-1] || "-"
+        }
+        
+        console.log(athletePerformance.value);
+    }
+    
 
 })
 
@@ -251,16 +273,16 @@ onUpdated(() => {
 
     </svg>
 
-    <!-- <p class="track_info">Athlete Name</p> -->
-    <div v-if="enableTrace" class="track_info">
+    <p v-if="athletePerformance" class="track_info">{{athletePerformance.lane}}</p>
+    <div v-else class="track_info">
         <select id="athlete_select" @change="changeSelection($event.target.value)">
             <option disabled selected>Select an athlete</option>
             <option v-for="athlete in athletes" :value="athlete.name">{{ athlete.name }}</option>
         </select>
     </div>
 
-    <InfoVertical v-if="props.trace" text='test' legend='legend'></InfoVertical>
-    <InfoVertical v-else :text='formatDisplayTime(selectedTime)' legend='Time'></InfoVertical>
+    <InfoVertical class="trace_info" v-if="props.trace" :text='traceInfo.text' :legend='traceInfo.legend'></InfoVertical>
+    <InfoVertical class="trace_info" v-else :text='formatDisplayTime(selectedTime)' legend='Time'></InfoVertical>
 </div>
 
 <div class="slidecontainer">
@@ -318,6 +340,7 @@ path.trace.selected {
     top: 38%;
     left: 50%;
     transform: translate(-50%, -50%);
+    margin: 0;
 }
 
 

@@ -129,48 +129,57 @@ onMounted(async ()=> {
             <div v-if="liveRaces.length" class="group_infos">
                 <CardHeader title="Live" :live="true"></CardHeader>
 
-                <RaceCard v-for="race in liveRaces" 
-                    :title="race.discipline.distance + 'm ' + race.discipline.gender.toUpperCase()" 
-                    :meeting="race.meeting.name" 
-                    :link="'#/race/' + race.id" 
-                    link_text="Follow live"></RaceCard>
+                <div class="list">
+                    <RaceCard v-for="race in liveRaces" 
+                        :title="race.discipline.distance + 'm ' + race.discipline.gender.toUpperCase()" 
+                        :meeting="race.meeting.name" 
+                        :link="'#/race/' + race.id" 
+                        link_text="Follow live">
+                    </RaceCard>
+                </div>
             </div>
 
             <div class="group_infos">
                 <CardHeader title="Latest races" :live="false"></CardHeader>
+                <div class="list">
+                    <RaceCard v-for="race in finishedRaces" 
+                        :title="race.discipline.distance + 'm ' + race.discipline.gender.toUpperCase()" 
+                        :meeting="race.meeting.name" 
+                        :link="'#/race/' + race.id" 
+                        link_text="See results">
+                    </RaceCard>
+                </div>
 
-                <RaceCard v-for="race in finishedRaces" 
-                    :title="race.discipline.distance + 'm ' + race.discipline.gender.toUpperCase()" 
-                    :meeting="race.meeting.name" 
-                    :link="'#/race/' + race.id" 
-                    link_text="See results"></RaceCard>
-
-                <SeeAllButton></SeeAllButton>
+                <SeeAllButton link="#/races"></SeeAllButton>
             </div>
         </div>
 
         <div class="group_infos">
             <CardHeader title="Upcoming events" :live="false"></CardHeader>
-
-            <EventCard v-for="meeting in upcomingMeetings" 
-                :title="meeting.name" 
-                :city=" meeting.city + ' (' + meeting.country.alpha3 + ')' " 
-                :date="formatEventDate(meeting.startDate, meeting.endDate)">
-            </EventCard>
+            <div class="list">
+                <EventCard v-for="meeting in upcomingMeetings" 
+                    :title="meeting.name" 
+                    :city=" meeting.city + ' (' + meeting.country.alpha3 + ')' " 
+                    :date="formatEventDate(meeting.startDate, meeting.endDate)"
+                    :link="'#/meeting/' + meeting.id">
+                </EventCard>
+            </div>
             
-            <SeeAllButton></SeeAllButton>
+            <SeeAllButton link="#/meetings/upcoming"></SeeAllButton>
         </div>
 
         <div class="group_infos">
             <CardHeader title="Past events" :live="false"></CardHeader>
+            <div class="list">
+                <EventCard v-for="meeting in pastMeeting" 
+                    :title="meeting.name" 
+                    :city=" meeting.city + ' (' + meeting.country.alpha3 + ')' " 
+                    :date="formatEventDate(meeting.startDate, meeting.endDate)"
+                    :link="'#/meeting/' + meeting.id">
+                </EventCard>
+            </div>
             
-            <EventCard v-for="meeting in pastMeeting" 
-                :title="meeting.name" 
-                :city=" meeting.city + ' (' + meeting.country.alpha3 + ')' " 
-                :date="formatEventDate(meeting.startDate, meeting.endDate)">
-            </EventCard>
-            
-            <SeeAllButton></SeeAllButton>
+            <SeeAllButton link="#/meetings/past"></SeeAllButton>
         </div>
     </div>
 
@@ -227,10 +236,17 @@ onMounted(async ()=> {
         flex-grow: 1
     }
 
-    .group_infos > #container {
+    .group_infos > .list > #container {
         border-radius: 8px;
         box-shadow: var(--shadow);
         border: none;
+    }
+
+    .list {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+        
     }
 
     .column {
@@ -255,7 +271,7 @@ onMounted(async ()=> {
             max-width: 370px;
         }
 
-        .group_infos > #container {
+        .group_infos > .list > #container {
             box-shadow: none;
             border: 1px solid var(--option);
         }

@@ -60,7 +60,6 @@ function formatEventDate(startDate, endDate) {
 
     <div class="column">
       <div class="group_infos">
-
         <athleteRankCard v-for="performance in race.performances" 
           :lastName="performance.athlete.lastName" 
           :firstName="performance.athlete.firstName" 
@@ -70,6 +69,9 @@ function formatEventDate(startDate, endDate) {
           :mentions="performance.mention"
           :link="'#/performance/' + performance.id">
         </athleteRankCard>
+
+        <p class="no_content" v-if="race.athletes && !race.athletes.length">No athletes for this race.</p>
+
 
       </div>
     </div>
@@ -85,7 +87,7 @@ function formatEventDate(startDate, endDate) {
             :wind="race.windSpeed">
       </RaceCardDetailled>
 
-      <TrackCard :card_title="race.state == 'finished' ? 'Rewind' : 'Live'" :enableTrace="race.state == 'finished'" :positions="positions"></TrackCard>
+      <TrackCard v-if="race.athletes && race.athletes.length" :card_title="race.state == 'finished' ? 'Rewind' : 'Live'" :enableTrace="race.state == 'finished'" :positions="positions"></TrackCard>
       
     </div>
   </div>
@@ -135,6 +137,15 @@ export default {
         flex-direction: column;
         gap: 20px;
         
+    }
+
+    .no_content {
+      text-align: center;
+      min-width: 300px;
+    }
+
+    .group_infos:has(> p.no_content) { 
+      flex-grow: 0;
     }
 
     @media (min-width: 600px) {

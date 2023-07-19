@@ -12,7 +12,7 @@ const props = defineProps({
 </script>
 
 <template>
-    <div id="container">
+    <a :href="link" id="container">
         <div class="title">
             <Info :text='title' icon="trophy.svg" :accent=true></Info>
         </div>
@@ -20,7 +20,7 @@ const props = defineProps({
             <Info :text='city' icon="city.svg"></Info>
             <Info :text='date' icon="calendar.svg"></Info>
         </div>
-    </div>
+    </a>
 </template>
 
 <style scoped>
@@ -30,8 +30,9 @@ const props = defineProps({
         border-radius: 8px;
         max-width: 370px;
         box-shadow: var(--shadow);
-
-        margin-bottom: 10px;
+        display: flex;
+        flex-direction: column;
+        align-items: center
     }
 
     .title {
