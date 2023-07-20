@@ -368,10 +368,12 @@ select:focus {
 }
 
 .slidecontainer {
-    
     width: 100%;
     margin-top: 10px;
+}
 
+.slider:hover {
+  cursor: pointer;
 }
 
 .slider {

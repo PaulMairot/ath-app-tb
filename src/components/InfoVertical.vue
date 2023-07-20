@@ -53,7 +53,7 @@ function isIcon(str) {
 #info_container {
     display: flex;
     flex-direction: column;
-    justify-content: center;
+
     align-items: center;
     margin-bottom: 10px;
     min-width: 100px;

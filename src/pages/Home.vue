@@ -143,6 +143,7 @@ onMounted(async ()=> {
     .column {
         display: flex;
         flex-direction: column;
+        
     }
 
     .no_content {

@@ -42,6 +42,10 @@ p, a {
   text-decoration: none;
 }
 
+a:hover {
+  cursor: pointer;
+}
+
 #app {
   max-width: 1280px;
   margin: 0;

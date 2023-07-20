@@ -11,6 +11,18 @@ export async function getMeetings(limit) {
     }
 }
 
+export async function getMeetingById(id) {
+
+  let url ='http://localhost:3000/meetings/' + id
+
+    const res = await axios.get(url, { validateStatus: false });
+    if (res.status != 404) {
+      return res.data
+    } else {
+      return []
+    }
+}
+
 export async function getUpcomingMeetings(date, limit) {
   if (!limit) limit = 0;
   try{
