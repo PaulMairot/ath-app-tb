@@ -81,3 +81,9 @@ p, a {
     padding: 6px;
   }
 }
+
+@media (min-width: 1000px) {
+  :root {
+    overflow-y: hidden;
+  }
+}

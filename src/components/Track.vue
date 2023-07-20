@@ -132,9 +132,8 @@ function changeTime(range) {
     } else if (document.getElementById('athlete_select').value) {
         athlete = findAthlete("name", document.getElementById('athlete_select').value);
     }
-    
-    emitInfos(athlete);
-    
+
+    emitInfos(athlete);  
 }
 
 
@@ -167,9 +166,14 @@ function changeSelection(athlete) {
     if(athlete_circle) athlete_circle.classList.add("selected");
     if(athlete_trace) athlete_trace.classList.add("selected");
 
+    traceInfo.value.text = athlete.runnedDistance[athlete.runnedDistance.length-1] > 0 ?
+                                athlete.runnedDistance[athlete.runnedDistance.length-1] + "m" :
+                                "-"
+
     emitInfos(athlete);
     
 }
+
 
 onUpdated(() => {
 
@@ -180,10 +184,8 @@ onUpdated(() => {
     if (props.selectedAthleteId) {
         athletePerformance.value = findAthlete('id', props.selectedAthleteId)
         if (athletePerformance.value != undefined) {
-            traceInfo.value.text = athletePerformance.value.distanceRunned[athletePerformance.value.distanceRunned.length-1] || "-"
+            traceInfo.value.text = athletePerformance.value.runnedDistance[athletePerformance.value.runnedDistance.length-1] + "m" || "-"
         }
-        
-        console.log(athletePerformance.value);
     }
     
 
@@ -263,10 +265,12 @@ onUpdated(() => {
 
         <!-- Start 100m -->
         <path d="M 80 210 L 80 250" />
+        <!-- Finish line -->
+        <path d="M 375 210 L 375 250" />
         </g>
 
         <!-- Athletes circles -->
-        <circle  v-for="athlete in athletes" class="player_circle" :class="[(athlete.selected ? 'selected' : ''), (props.trace ? 'hidden': '')]" :id="'circle_'+athlete.name" :cx="athlete.positions[0].x" :cy="athlete.positions[0].y" r="5" />
+        <circle  v-for="athlete in athletes" class="player_circle" :class="[(athlete.selected ? 'selected' : ''), (props.trace ? 'hidden': '')]" :id="'circle_'+athlete.name" :cx="athlete.positions[0].x" :cy="athlete.positions[0].y" cz="-10" r="5" />
 
         <!-- Athletes traces-->
         <path v-show="props.trace" class="trace" v-for="athlete in athletes" :class="athlete.selected ? 'selected' : ''" :id="'trace_'+athlete.name" :d="defineTrace(athlete.positions)"/>
@@ -286,7 +290,7 @@ onUpdated(() => {
 </div>
 
 <div class="slidecontainer">
-    <input v-show="!props.trace"  type="range" :min="timeList[0]" :max="timeList[timeList.length - 1]" :value="selectedTime" step="0.05" class="slider" id="range" @input="event => changeTime(event.srcElement)">
+    <input :class="props.trace ? 'hidden' : 'visible'"  type="range" :min="timeList[0]" :max="timeList[timeList.length - 1]" :value="selectedTime" step="0.05" class="slider" id="range" @input="event => changeTime(event.srcElement)">
 </div>
 
 
@@ -302,6 +306,7 @@ onUpdated(() => {
 
 #track {
     position: relative;
+    max-width: 420px;
 }
 
 g > path  {
@@ -331,7 +336,7 @@ path.trace {
 
 path.trace.selected {
     stroke: var(--accent);
-    stroke-width: 1.2px;
+    stroke-width: 1.5px;
     stroke-linejoin: round;
 }
 
@@ -358,6 +363,9 @@ select:focus {
     outline: none;
 }
 
+.hidden {
+    visibility: hidden;
+}
 
 .slidecontainer {
     

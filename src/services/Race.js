@@ -1,7 +1,6 @@
 import axios from "axios"
 import * as PerformanceService from '../services/Performance';
 
-
 export async function getRaces(state, limit) {
   if (!limit) limit = 0;
 

@@ -37,6 +37,7 @@ function goBack() {
 
 h1 {
     margin: 0;
+    white-space: nowrap;
 }
 
 a {
@@ -73,12 +74,17 @@ a {
 
     h1 {
         text-align: center;
-        margin-left: -40px;
         flex-grow: 2;
+    }
+
+    .hidden {
+        display: block;
+        visibility: hidden;
     }
 
     #back_button {
         margin: 0;
     }
+    
 }
 </style>

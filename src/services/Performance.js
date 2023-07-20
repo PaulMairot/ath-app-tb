@@ -78,7 +78,8 @@ export function getHighlights(performance) {
             "accent": true
         },
         {
-            "text": (performance.reactionTime<=0?"":"+") + performance.reactionTime + " s", 
+            "text": performance.reactionTime != undefined ? (performance.reactionTime<=0?"":"+") + performance.reactionTime + " s" 
+                                                          : '-', 
             "icon": "push.svg", 
             "legend": "Reaction Time"
         }
@@ -135,7 +136,8 @@ export function getPressureArray(pressures, times) {
 
 export function getReactionTimeInfos(performance) {
     return {
-        "text": (performance.reactionTime<=0?"":"+") + performance.reactionTime + " s", 
+        "text": performance.reactionTime != undefined ? (performance.reactionTime<=0?"":"+") + performance.reactionTime + " s" 
+                                                 : '-', 
         "icon":"push.svg", 
         "legend":"Reaction Time"
     }

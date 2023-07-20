@@ -65,7 +65,7 @@ function formatEventDate(startDate, endDate) {
             :meeting="performance.race.meeting.name">
         </RaceCard>
 
-        <ChartCard 
+        <ChartCard
             card_title="Starting" 
             :infos="[PerformanceService.getReactionTimeInfos(performance)]" 
             :data="pressures" 
@@ -80,7 +80,7 @@ function formatEventDate(startDate, endDate) {
     </div>
     <div class="column">
         <div class="row">
-            <ChartCard 
+            <ChartCard  v-if="speeds"
                 card_title="Speed" 
                 :infos="[PerformanceService.getAverageSpeedInfos(speeds)]" 
                 :data="speeds" 
@@ -94,9 +94,9 @@ function formatEventDate(startDate, endDate) {
 
             <DefaultCard
                 card_title="About the athlete" 
-                :infos="PerformanceService.getAthleteInfos(performance)" 
-                listTitle="Latest results" 
-                :listInfos="latestRaces">
+                :infos="PerformanceService.getAthleteInfos(performance)"
+                list_title="Latest results" 
+                :list_infos="latestRaces">
             </DefaultCard>
         </div>
 
@@ -116,18 +116,22 @@ export default {
             speeds: [],
             pressures: [],
             latestRaces: [],
-            positions: []
+            positions: [],
         };
     },
     async created() {
         const route = useRoute();
         this.performance = await PerformanceService.getPerformanceById(route.params.id);
-        //console.log(this.performance);
         
-        this.speeds = PerformanceService.getSpeedArray(this.performance.positions);
-        this.pressures = PerformanceService.getPressureArray(this.performance.startingPressure.pressure, this.performance.startingPressure.time);
+        if (this.performance.startingPressure)
+            this.pressures = PerformanceService.getPressureArray(this.performance.startingPressure.pressure, this.performance.startingPressure.time);
+        if (this.performance.positions) 
+            this.speeds = PerformanceService.getSpeedArray(this.performance.positions);
+        if (this.performance.positions) 
+            this.positions = await RaceService.getRacePositions(this.performance.race.id);
+        
         this.latestRaces = await PerformanceService.getLatestPerformance(this.performance.athlete.id, 2); 
-        this.positions = await RaceService.getRacePositions(this.performance.race.id);
+        
     },
     components: { DefaultCard, RaceCard, TrackCard, ChartCard }
 }
@@ -156,20 +160,19 @@ export default {
         flex-direction: column;
         gap: 20px; 
         flex: 0 1 250px;
+        margin-bottom: 20px;
     }
 
     .row {
         display: flex;
-        flex-direction: row;
+        flex-direction: column;
         gap: 20px;
-        
     }
 
     @media (min-width: 600px) {
         #content {
             display: flex;
-            flex-direction: row;
-            gap: 20px
+            gap: 20px;
         }
         .group_infos {
             border-radius: 8px;
@@ -184,5 +187,16 @@ export default {
             box-shadow: none;
             border: 1px solid var(--option);
         }
+
+        .column {
+            margin-bottom: 0;
+        }
+
+        .row {
+            display: flex;
+            flex-direction: row;
+            gap: 20px;
+        }
+        
     }
 </style>

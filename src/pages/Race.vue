@@ -122,8 +122,8 @@ export default {
         background-color: transparent;
         padding: 0;
         max-width: 100%;
-
-        flex-grow: 1
+        margin-bottom: 10px;
+        flex-grow: 1;
     }
 
     .group_infos > #container {
@@ -159,7 +159,7 @@ export default {
             box-shadow: var(--shadow);
             background-color: var(--primary);
             padding: 20px;
-            
+            margin-bottom: 0;
             max-width: 370px;
         }
 

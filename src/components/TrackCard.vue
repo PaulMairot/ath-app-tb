@@ -3,7 +3,7 @@ import '../style.css';
 import InfoVertical from '../components/InfoVertical.vue';
 import CardHeader from './CardHeader.vue';
 import Track from './Track.vue';
-import { onUpdated, ref } from 'vue';
+import { computed, onUpdated, reactive, ref } from 'vue';
 
 const props = defineProps({
   card_title: String,
@@ -37,7 +37,7 @@ function formatAthletesArray(positions) {
             rank: [],
             speed: [],
             gapToLeader: [],
-            distanceRunned: [],
+            runnedDistance: [],
         };
         }
 
@@ -46,194 +46,73 @@ function formatAthletesArray(positions) {
         result[athleteName].rank.push(obj.rank);
         result[athleteName].speed.push(obj.speed);
         result[athleteName].gapToLeader.push(obj.gapToLeader);
-        result[athleteName].distanceRunned.push(obj.distanceRunned || null) ;
+        result[athleteName].runnedDistance.push(obj.runnedDistance || 0) ;
     });
 
     return Object.values(result);
 }
 
 let trace = ref(false);
+let infoSecondary = ref(false)
+
+let positionData = ref({
+    'athlete': '', 
+    'rank': '', 
+    'speed': '', 
+    'gapToLeader': ''
+});
+
 let infos = ref([
-        {
-            "text": "-", 
-            "icon":"podium.svg", 
-            "legend":"Rank"
-        },
-        {
-            "text": "-", 
-            "icon":"speed.svg", 
-            "legend":"Speed"
-        }
-    ]);
-
-let athletes = [
     {
-        "name": "test1",
-        "selected": false,
-        "time": [
-            "0.00",
-            "1.00",
-            "1.50",
-            "2.50",
-            "3.00",
-            "4.50",
-            "5.50",
-            "6.00",
-            "6.50",
-            "7.00",
-            "8.00",
-            "8.50",
-            "9.00",
-            "9.50",
-            "10.50",
-            "11.50"
-        ],
-        "positions": [
-            {"x": 80, "y": 248},
-            {"x": 100, "y": 248},
-            {"x": 120, "y": 248},
-            {"x": 140, "y": 248},
-            {"x": 161, "y": 248},
-            {"x": 181, "y": 248},
-            {"x": 202, "y": 248},
-            {"x": 223, "y": 248},
-            {"x": 245, "y": 248},
-            {"x": 265, "y": 248},
-            {"x": 286, "y": 248},
-            {"x": 307, "y": 248},
-            {"x": 327, "y": 248},
-            {"x": 347, "y": 248},
-            {"x": 368, "y": 248},
-            {"x": 384, "y": 248}
-        ]
+        "text": "-", 
+        "icon":"podium.svg", 
+        "legend":"Rank",
+        "display": !infoSecondary.value
     },
     {
-        "name": "test2",
-        "selected": false,
-         "time": [
-            "0.00",
-            "1.00",
-            "1.50",
-            "2.50",
-            "3.00",
-            "4.50",
-            "5.50",
-            "6.00",
-            "6.50",
-            "7.00",
-            "8.00",
-            "8.50",
-            "9.00",
-            "9.50",
-            "10.50",
-            "11.50"
-        ],
-        "positions": [
-            {"x": 80, "y": 242},
-            {"x": 100, "y": 243},
-            {"x": 120, "y": 243},
-            {"x": 140, "y": 242},
-            {"x": 160, "y": 242},
-            {"x": 181, "y": 242},
-            {"x": 200, "y": 242},
-            {"x": 221, "y": 243},
-            {"x": 242, "y": 243},
-            {"x": 262, "y": 243},
-            {"x": 282, "y": 242},
-            {"x": 304, "y": 242},
-            {"x": 325, "y": 242},
-            {"x": 345, "y": 242},
-            {"x": 366, "y": 243},
-            {"x": 382, "y": 242}
-            /*
-            {"x": 140, "y": 42},
-            {"x": 112, "y": 43},
-            {"x": 91, "y": 52},
-            {"x": 75, "y": 62},
-            {"x": 66, "y": 70},
-            {"x": 53, "y": 86},
-            {"x": 50, "y": 94},
-            {"x": 43, "y": 119},
-            {"x": 47, "y": 153},
-            {"x": 50, "y": 161},
-            {"x": 58, "y": 176},
-            {"x": 64, "y": 183},
-            {"x": 90, "y": 205},
-            {"x": 125, "y": 211},
-            {"x": 141, "y": 211},
-            {"x": 165, "y": 211},
-            {"x": 190, "y": 211},
-            {"x": 215, "y": 211},
-            {"x": 247, "y": 211},
-            {"x": 270, "y": 211},
-            {"x": 294, "y": 211},
-            {"x": 315, "y": 211},
-            {"x": 342, "y": 211},
-            {"x": 375, "y": 211},
-            */
-        ]
+        "text": "-", 
+        "icon":"space.svg", 
+        "legend":"gap to leader",
+        "display": infoSecondary.value
     },
     {
-        "name": "test3",
-        "selected": false,
-         "time": [
-            "0.00",
-            "1.00",
-            "1.50",
-            "2.50",
-            "3.00",
-            "4.50",
-            "5.50",
-            "6.00",
-            "6.50",
-            "7.00",
-            "8.00",
-            "8.50",
-            "9.00",
-            "9.50",
-            "10.50",
-            "11.50"
-        ],
-        "positions": [
-            {"x": 80, "y": 237},
-            {"x": 100, "y": 237},
-            {"x": 120, "y": 237},
-            {"x": 140, "y": 237},
-            {"x": 160, "y": 237},
-            {"x": 180, "y": 237},
-            {"x": 197, "y": 237},
-            {"x": 218, "y": 237},
-            {"x": 239, "y": 237},
-            {"x": 259, "y": 237},
-            {"x": 279, "y": 237},
-            {"x": 300, "y": 237},
-            {"x": 321, "y": 237},
-            {"x": 341, "y": 237},
-            {"x": 361, "y": 237},
-            {"x": 377, "y": 237}
-
-        ]
+        "text": "-", 
+        "icon":"speed.svg", 
+        "legend":"Speed",
+        "display": true
     }
-]
+]);
 
+    
 function updateInfos(data) {
+    positionData.value = data
+
     infos.value = [
         {
-            "text": data.rank + 'th', 
+            "text": data.rank + (data.rank != '' ? 'th' : '-'), 
             "icon":"podium.svg", 
-            "legend":"Rank"
+            "legend":"Rank",
+            "display": !infoSecondary.value
         },
         {
-            "text": data.speed + ' km/h', 
+            "text": data.gapToLeader > 0 ? (data.gapToLeader + 'm') : '-', 
+            "icon":"space.svg", 
+            "legend":"Gap to leader",
+            "display": infoSecondary.value
+        },
+        {
+            "text": data.speed + (data.speed != '' ? 'km/h' : '-'), 
             "icon":"speed.svg", 
-            "legend":"Speed"
+            "legend":"Speed",
+            "display": true
         }
     ]
 }
 
-onUpdated(() => {
-    
-})
+function changeInfo() {
+    infoSecondary.value = !infoSecondary.value;
+    updateInfos(positionData.value)
+}
 
 </script>
 
@@ -242,7 +121,7 @@ onUpdated(() => {
         <CardHeader :title="card_title"></CardHeader>
         <div id="content">
             <div class="infos">
-                <InfoVertical v-for="info in infos" :text='info.text' :icon='info.icon' :legend='info.legend' :accent='info.accent'></InfoVertical>
+                <InfoVertical @click="changeInfo" v-for="info in infos" v-show="info.display" :text='info.text' :icon='info.icon' :legend='info.legend' :accent='info.accent' :key="info"></InfoVertical>
                 
                 <div v-if="props.enableTrace" id="trace_button">
                     <img class="icon" src="../assets/icons/trace.svg">

@@ -1,6 +1,6 @@
 import axios from "axios"
 
-export async function getAllMeetings(limit) {
+export async function getMeetings(limit) {
   if (!limit) limit = 0;
   try{
       const res = await axios.get('http://localhost:3000/meetings?limit=' + limit);
@@ -31,4 +31,12 @@ export async function getPastMeetings(date, limit) {
     }catch(err){
 
     }
+}
+
+export function filterMeetings(meetings, filter) {
+  if (filter) {
+      return meetings.filter(meeting => meeting.name == filter)
+  } else {
+      return meetings
+  }
 }

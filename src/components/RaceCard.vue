@@ -12,6 +12,7 @@ const props = defineProps({
   link_text: String
 })
 
+
 </script>
 
 <template>
@@ -28,7 +29,7 @@ const props = defineProps({
                 <img class="icon" src="../assets/icons/trophy.svg">
                 <p>{{ meeting }}</p>
             </div>
-            <a v-if="link" :href='link'>
+            <a v-if="link && link_text" :href='link'>
                 <p>{{ link_text }}</p>
                 <img class="link_icon" src="../assets/icons/arrow_right.svg">
             </a>

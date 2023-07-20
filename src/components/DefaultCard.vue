@@ -1,6 +1,7 @@
 <script setup>
 import '../style.css';
 import InfoVertical from '../components/InfoVertical.vue';
+import Info from '../components/Info.vue';
 import ResultList from '../components/ResultList.vue';
 import CardHeader from './CardHeader.vue';
 import { onBeforeMount, ref, toRaw, watchEffect } from 'vue';
@@ -10,8 +11,8 @@ import * as RaceService from '../services/Race.js'
 const props = defineProps({
   card_title: String,
   infos: Array,
-  listTitle: String,
-  listInfos: Array
+  list_title: String,
+  list_infos: Array
 })
 
 </script>
@@ -22,7 +23,7 @@ const props = defineProps({
         <div class="infos">
             <InfoVertical v-for="info in infos" :text='info.text' :icon='info.icon' :legend='info.legend' :accent='info.accent'></InfoVertical>
         </div>
-        <ResultList v-if="listInfos" :title="listTitle" :results="listInfos" :key="listInfos.meeting"></ResultList>
+        <ResultList v-if="list_infos" :title="list_title" :results="list_infos" :key="list_infos.meeting"></ResultList>
     </div>
 </template>
 

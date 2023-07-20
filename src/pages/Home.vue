@@ -6,10 +6,6 @@ import CardHeader from '../components/CardHeader.vue';
 import EventCard from '../components/EventCard.vue';
 import RaceCard from '../components/RaceCard.vue';
 import SeeAllButton from "../components/SeeAllButton.vue";
-import RaceCardDetailled from '../components/RaceCardDetailled.vue';
-import DefaultCard from '../components/DefaultCard.vue';
-import ChartCard from '../components/ChartCard.vue';
-import TrackCard from '../components/TrackCard.vue';
 
 import * as MeetingService from '../services/Meeting.js'
 import * as RaceService from '../services/Race.js'
@@ -22,81 +18,9 @@ import { format, compareAsc } from 'date-fns'
 let upcomingMeetings = ref([]); 
 let pastMeeting = ref([]);
 
+let races = ref([]);
 let finishedRaces = ref([]);
 let liveRaces = ref([]);
-
-let cardTestChart = [
-    {
-        "text":"28.8 km/h", 
-        "icon":"speed.svg", 
-        "legend":"Average"
-    }
-]
-
-let cardTestAthlete = [
-    {
-        "text":"12.06.1998", 
-        "icon":"calendar.svg", 
-        "legend":"Date of birth"
-    },
-    {
-        "text":"Quatar", 
-        "icon":"qa", 
-        "legend":"Nationality"
-    },
-    {
-        "text":"400m / 200m", 
-        "icon":"shoe.svg", 
-        "legend":"Disciplines"
-    }
-]
-
-let cardTestInfos = [
-    {
-        "text":"4", 
-        "icon":"podium.svg", 
-        "legend":"Rank"
-    },
-    {
-        "text":"48.57", 
-        "icon":"chrono.svg", 
-        "legend":"Result",
-        "accent":true
-    },
-    {
-        "text":"+0.199 ms", 
-        "icon":"push.svg", 
-        "legend":"Reaction Time"
-    }
-]
-
-let cardTestList = [
-    {
-        "meeting":"Diamond League", 
-        "date":"5 MAY 2023", 
-        "race":"400m",
-        "result":"48.57"
-    },
-    {
-        "meeting":"ACNW", 
-        "date":"7 MAR 2023", 
-        "race":"200m",
-        "result":"22.23"
-    }
-]
-
-let cardTestTrack = [
-    {
-        "text":"4th", 
-        "icon":"podium.svg", 
-        "legend":"Rank"
-    },
-    {
-        "text":"27.2 km/h", 
-        "icon":"speed.svg", 
-        "legend":"Speed"
-    }
-]
 
 function formatEventDate(startDate, endDate) {
     startDate = new Date(startDate);
@@ -113,8 +37,9 @@ onMounted(async ()=> {
     upcomingMeetings.value = await MeetingService.getUpcomingMeetings(format(new Date(), 'yyyy-MM-dd'), 4);
     pastMeeting.value = await MeetingService.getPastMeetings(format(new Date(), 'yyyy-MM-dd'), 4);
 
-    finishedRaces.value = await RaceService.getRaces('finished', 4);
-    liveRaces.value = await RaceService.getRaces('live', 1)
+    races.value = await RaceService.getRaces();
+    finishedRaces.value = races.value.filter(race => race.state == 'finished')
+    liveRaces.value = races.value.filter(race => race.state == 'live');
 })
 
 </script>
@@ -142,85 +67,53 @@ onMounted(async ()=> {
             <div class="group_infos">
                 <CardHeader title="Latest races" :live="false"></CardHeader>
                 <div class="list">
-                    <RaceCard v-for="race in finishedRaces" 
+                    <RaceCard v-for="race in finishedRaces.slice(0, 4)" 
                         :title="race.discipline.distance + 'm ' + race.discipline.gender.toUpperCase()" 
                         :meeting="race.meeting.name" 
                         :link="'#/race/' + race.id" 
                         link_text="See results">
                     </RaceCard>
+
+                    <p class="no_content" v-if="!finishedRaces.length">No race at this moment.</p>
                 </div>
 
-                <SeeAllButton link="#/races"></SeeAllButton>
+                <SeeAllButton v-if="finishedRaces.length" link="#/races"></SeeAllButton>
             </div>
         </div>
 
         <div class="group_infos">
             <CardHeader title="Upcoming events" :live="false"></CardHeader>
             <div class="list">
-                <EventCard v-for="meeting in upcomingMeetings" 
+                <EventCard v-for="meeting in upcomingMeetings.slice(0, 4)" 
                     :title="meeting.name" 
                     :city=" meeting.city + ' (' + meeting.country.alpha3 + ')' " 
                     :date="formatEventDate(meeting.startDate, meeting.endDate)"
                     :link="'#/meeting/' + meeting.id">
                 </EventCard>
+
+                <p class="no_content" v-if="!upcomingMeetings.length">No upcoming meeting at this moment.</p>
             </div>
             
-            <SeeAllButton link="#/meetings/upcoming"></SeeAllButton>
+            <SeeAllButton v-if="upcomingMeetings.length" link="#/meetings"></SeeAllButton>
         </div>
 
         <div class="group_infos">
             <CardHeader title="Past events" :live="false"></CardHeader>
             <div class="list">
-                <EventCard v-for="meeting in pastMeeting" 
+                <EventCard v-for="meeting in pastMeeting.slice(0, 4)" 
                     :title="meeting.name" 
                     :city=" meeting.city + ' (' + meeting.country.alpha3 + ')' " 
                     :date="formatEventDate(meeting.startDate, meeting.endDate)"
                     :link="'#/meeting/' + meeting.id">
                 </EventCard>
+
+                <p class="no_content" v-if="!pastMeeting.length">No meeting at this moment.</p>
             </div>
             
-            <SeeAllButton link="#/meetings/past"></SeeAllButton>
+            <SeeAllButton v-if="pastMeeting.length" link="#/meetings"></SeeAllButton>
         </div>
     </div>
 
-    <!--
-    <TrackCard card_title="Rewind" :infos="cardTestTrack" :enableTrace="true"></TrackCard>
-
-    <ChartCard card_title="Speed" :infos="cardTestChart">tew</ChartCard>
-    
-    <DefaultCard card_title="About the athlete" :infos="cardTestAthlete" listTitle="Latest results" :listInfos="cardTestList"></DefaultCard>
-    <DefaultCard card_title="Highlights" :infos="cardTestInfos"></DefaultCard>
-    
-    <div class="group_infos">
-        <CardHeader title="All races"></CardHeader>
-        <RaceCard title="100m MEN" meeting="Wanda Diamond League" link="#/race" link_text="See results"></RaceCard>
-        <RaceCard title="400m WOMEN" meeting="Wanda Diamond League" time="Start at 18:40"></RaceCard>
-    </div>
-
-    <EventCard title="Wanda Diamond League" city="Rabat (MAR)" date="28 MAY 2023"></EventCard>
-    
-    <RaceCardDetailled 
-        title="400m MEN"
-        meeting="Wanda Diamond League" 
-        date="5 MAY 2023"
-        time="18:40"
-        location="Qatar SC Stadium"
-        city="Doha (QAT)"
-        condition="cloudy"
-        temperature="34"
-        wind="+2">
-    </RaceCardDetailled>
-    <RaceCardDetailled 
-        meeting="Wanda Diamond League" 
-        date="5 MAY 2023"
-        time="18:40"
-        location="Qatar SC Stadium"
-        city="Doha (QAT)"
-        condition="cloudy"
-        temperature="34"
-        wind="+2">
-    </RaceCardDetailled>
-    -->
 </template>
 
 <style scoped>
@@ -232,8 +125,7 @@ onMounted(async ()=> {
         background-color: transparent;
         padding: 0;
         max-width: 100%;
-
-        flex-grow: 1
+        flex-grow: 1;
     }
 
     .group_infos > .list > #container {
@@ -246,13 +138,16 @@ onMounted(async ()=> {
         display: flex;
         flex-direction: column;
         gap: 10px;
-        
     }
 
     .column {
         display: flex;
         flex-direction: column;
-        
+    }
+
+    .no_content {
+      text-align: center;
+      min-width: 300px;
     }
 
     @media (min-width: 600px) {
