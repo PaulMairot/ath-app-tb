@@ -86,11 +86,13 @@ onMounted(async ()=> {
 
 section {
     display:flex;
-    width:100%;
+    width: calc(100% + 15px);
     gap: 10px;
     overflow:auto;
-    padding-bottom: 15px;
+    padding: 15px;
+    padding-right: 0;
     margin-bottom: 20px;
+    margin-left: -16px;
 }
 
 section > * {

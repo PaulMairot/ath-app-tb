@@ -25,7 +25,7 @@ function isIcon(str) {
         <span v-if="icon && !isIcon(icon)" :class="'fi fi-' + icon.toLowerCase()"></span>
         
         <Transition name="slide-fade" mode="out-in">
-            <p :key="text" class="text">{{ text }}</p>
+            <p v-if="text" :key="text" class="text" :class="text.length > 12 ? 'longInfo' : ''">{{ text }}</p>
         </Transition>
         <p class="legend">{{ legend }}</p>
     </div>
@@ -75,13 +75,20 @@ p.text {
     white-space: nowrap;
 }
 
-p.text:hover {
+p.longInfo.text:hover {
     cursor: default;
-    max-width: 100px;
     overflow: visible;
     overflow-wrap: break-word;
     white-space:normal;
     text-align: center;
+    position: absolute;
+    background-color: var(--primary);
+    box-shadow: var(--shadow);
+    padding: 5px;
+    
+    border-radius: 8px;
+    width: 100px;
+    height: 75px;
 }
 
 #info_container.primary > p:nth-of-type(1){

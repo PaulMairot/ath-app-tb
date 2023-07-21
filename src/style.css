@@ -63,6 +63,7 @@ a:hover {
     --option_dark: #a9a9a9;
     --accent: #c23a30;
     --accent_filter: invert(27%) sepia(50%) saturate(4407%) hue-rotate(349deg) brightness(83%) contrast(80%);
+    --shadow: 0px 0px 4px 0px rgba(0, 0, 0, 0.25);
   }
 }
 
@@ -77,6 +78,7 @@ a:hover {
     --option_dark: #737373;
     --accent: #c23a30;
     --accent_filter: invert(27%) sepia(50%) saturate(4407%) hue-rotate(349deg) brightness(83%) contrast(80%);
+    --shadow: 0px 0px 4px 0px rgba(0, 0, 0, 0.25);
   }
 }
 

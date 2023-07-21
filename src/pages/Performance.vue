@@ -46,65 +46,69 @@ function formatEventDate(startDate, endDate) {
 </script>
 
 <template>
-  <PageHeader
-    :title="capitalizeWord(performance.athlete.lastName) + ' ' + capitalizeFirstLetters(performance.athlete.firstName)" 
-    :back_button='true'>
-  </PageHeader>
 
-  <div id="content">
+    <PageHeader
+        :title="capitalizeWord(performance.athlete.lastName) + ' ' + capitalizeFirstLetters(performance.athlete.firstName)" 
+        :back_button='true'>
+    </PageHeader>
 
-    <div class="column">
-        <DefaultCard
-            card_title="Highlights"
-            :infos="PerformanceService.getHighlights(performance)">
-        </DefaultCard>
+    
+    <div id="content">
 
-        <RaceCard 
-            card_title="Race informations" 
-            :title="performance.race.discipline.distance + 'm ' + performance.race.discipline.gender.toUpperCase()"
-            :meeting="performance.race.meeting.name">
-        </RaceCard>
+        <div class="column">
+            <DefaultCard
+                card_title="Highlights"
+                :infos="PerformanceService.getHighlights(performance)">
+            </DefaultCard>
 
-        <ChartCard
-            card_title="Starting" 
-            :infos="[PerformanceService.getReactionTimeInfos(performance)]" 
-            :data="pressures" 
-            xAxisLabel="TIME [ms]"
-            yAxisLabel="FORCE [N]"
-            :xMin="-300" 
-            :xMax="Math.max(...speeds.map(i => i.y))"
-            :xTick="100"
-            :yTick="100">
-        </ChartCard>
+            <RaceCard 
+                card_title="Race informations" 
+                :title="performance.race.discipline.distance + 'm ' + performance.race.discipline.gender.toUpperCase()"
+                :meeting="performance.race.meeting.name">
+            </RaceCard>
 
-    </div>
-    <div class="column">
-        <div class="row">
-            <ChartCard  v-if="speeds"
-                card_title="Speed" 
-                :infos="[PerformanceService.getAverageSpeedInfos(speeds)]" 
-                :data="speeds" 
-                xAxisLabel="TIME [s]"
-                yAxisLabel="SPEED [km/h]"
-                :xMin="0" 
+            <ChartCard
+                card_title="Starting" 
+                :infos="[PerformanceService.getReactionTimeInfos(performance)]" 
+                :data="pressures" 
+                xAxisLabel="TIME [ms]"
+                yAxisLabel="FORCE [N]"
+                :xMin="-300" 
                 :xMax="Math.max(...speeds.map(i => i.y))"
-                :xTick="1"
-                :yTick="1">
+                :xTick="100"
+                :yTick="100">
             </ChartCard>
 
-            <DefaultCard
-                card_title="About the athlete" 
-                :infos="PerformanceService.getAthleteInfos(performance)"
-                list_title="Latest results" 
-                :list_infos="latestRaces">
-            </DefaultCard>
+        </div>
+        <div class="column">
+            <div class="row">
+                <ChartCard  v-if="speeds"
+                    card_title="Speed" 
+                    :infos="PerformanceService.getAverageSpeedInfos(speeds)" 
+                    :data="speeds" 
+                    xAxisLabel="TIME [s]"
+                    yAxisLabel="SPEED [km/h]"
+                    :xMin="0" 
+                    :xMax="Math.max(...speeds.map(i => i.y))"
+                    :xTick="1"
+                    :yTick="1">
+                </ChartCard>
+
+                <DefaultCard
+                    card_title="About the athlete" 
+                    :infos="PerformanceService.getAthleteInfos(performance)"
+                    list_title="Latest results" 
+                    :list_infos="latestRaces">
+                </DefaultCard>
+            </div>
+
+            <TrackCard card_title="Position" :enableTrace="true" :positions="positions" :selectedAthleteId="performance.athlete.id"></TrackCard>
         </div>
 
-        <TrackCard card_title="Position" :enableTrace="true" :positions="positions" :selectedAthleteId="performance.athlete.id"></TrackCard>
     </div>
-    
 
-  </div>
+
+
 </template>
 
 <script>
@@ -117,6 +121,7 @@ export default {
             pressures: [],
             latestRaces: [],
             positions: [],
+            connection: null
         };
     },
     async created() {
@@ -130,8 +135,18 @@ export default {
         if (this.performance.positions) 
             this.positions = await RaceService.getRacePositions(this.performance.race.id);
         
-        this.latestRaces = await PerformanceService.getLatestPerformance(this.performance.athlete.id, 2); 
-        
+        this.latestRaces = await PerformanceService.getLatestPerformance(this.performance.athlete.id, 3); 
+
+        this.connection = new WebSocket("ws://localhost:3000")
+        console.log(this.connection);
+        this.connection.onmessage = function(event) {
+            const message = JSON.parse(event.data);
+            if (message.ressource == "performance") {
+                if (route.params.id == message.data.id)
+                    console.log(performance.value);
+            }
+            
+        }
     },
     components: { DefaultCard, RaceCard, TrackCard, ChartCard }
 }

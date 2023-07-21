@@ -65,7 +65,7 @@ export default {
     async created() {
         const route = useRoute();
         this.meeting = await MeetingService.getMeetingById(route.params.id);
-        console.log(this);
+
         if (this.meeting)
         this.formatedInfo = [
             {

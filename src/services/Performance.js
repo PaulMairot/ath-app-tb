@@ -67,18 +67,18 @@ export async function getLatestPerformance(athlete_id, limit) {
 export function getHighlights(performance) {
     return [
         {
-            "text": performance.rank, 
+            "text": performance.rank ? performance.rank : '-', 
             "icon": "podium.svg", 
             "legend": "Rank"
         },
         {
-            "text": performance.result, 
+            "text": performance.result ? performance.result : '-', 
             "icon": "time.svg", 
             "legend": "Result",
             "accent": true
         },
         {
-            "text": performance.reactionTime != undefined ? (performance.reactionTime<=0?"":"+") + performance.reactionTime + " s" 
+            "text": performance.reactionTime ? (performance.reactionTime<=0?"":"+") + performance.reactionTime + " s" 
                                                           : '-', 
             "icon": "push.svg", 
             "legend": "Reaction Time"
@@ -112,11 +112,20 @@ export function getAverageSpeedInfos(speeds) {
     });
     sum /= speeds.length;
 
-    return {
-        "text": sum.toFixed(2) + " km/h", 
-        "icon":"speed.svg", 
-        "legend":"Average"
+    if (!isNaN(sum)) {
+        return [{
+            "text": sum.toFixed(2) + " km/h", 
+            "icon":"speed.svg", 
+            "legend":"Average"
+        }]
+    } else {
+        return [{
+            "text": "-", 
+            "icon":"speed.svg", 
+            "legend":"Average"
+        }]
     }
+    
 }
 
 export function getPressureArray(pressures, times) {

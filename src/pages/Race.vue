@@ -14,25 +14,6 @@ const props = defineProps({
   live: Boolean
 })
 
-const trackDefaultInfo = [
-    {
-        "text":"4th", 
-        "icon":"podium.svg", 
-        "legend":"Rank"
-    },
-    {
-        "text":"27.2 km/h", 
-        "icon":"speed.svg", 
-        "legend":"Speed"
-    }
-]
-
-/* onBeforeMount(async ()=> {
-  race = await RaceService.getRaceById(route.params.id)
-  console.log(race.meeting);
- })*/
-
-
 
 function formatEventDate(startDate, endDate) {
     startDate = new Date(startDate);

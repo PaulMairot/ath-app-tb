@@ -78,7 +78,7 @@ function getRankIcon(rank, mention) {
     .rank {
         width: 50px;
         height: 50px;
-        margin: 0 12px 0 0;
+        margin: 0 10px 0 0;
         filter: var(--text_filter);
     }
 

@@ -78,6 +78,7 @@ function formatTime(time) {
         justify-content:space-evenly;
         flex-grow: 1;
         gap: 8px;
+        align-content: center;
     }
 
     @media (max-width: 600px) {
