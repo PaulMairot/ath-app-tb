@@ -3,6 +3,7 @@ import '../style.css';
 import Info from '../components/Info.vue';
 import CardHeader from './CardHeader.vue';
 
+import { formatTime, capitalizeFirstLetter } from '../services/Formating.js'
 
 const props = defineProps({
   title: String,
@@ -16,16 +17,6 @@ const props = defineProps({
   wind: Number
 })
 
-function capitalizeFirstLetter(str) {
-    return str.charAt(0).toUpperCase() + str.slice(1);
-}
-
-function formatTime(time) {
-    if (time.length > 5) {
-        return time.substring(0, 5)
-    }
-    return time
-}
 
 </script>
 

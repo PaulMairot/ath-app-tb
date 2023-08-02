@@ -1,54 +1,31 @@
 <script setup>
-import { onMounted, ref } from 'vue';
 import { useRoute } from 'vue-router'
-import { format, compareAsc } from 'date-fns'
 
 import PageHeader from '../components/PageHeader.vue';
 import DefaultCard from '../components/DefaultCard.vue';
 import RaceCard from '../components/RaceCard.vue';
+import TrackCard from '../components/TrackCard.vue';
+import ChartCard from '../components/ChartCard.vue';
 
 import * as PerformanceService from '../services/Performance.js'
 import * as RaceService from '../services/Race.js'
 import Performance from '../services/PerformanceModel.js'
+import { capitalizeFirstLetter, capitalizeWord } from '../services/Formating.js';
 
 
-import TrackCard from '../components/TrackCard.vue';
-import ChartCard from '../components/ChartCard.vue';
+
 
 const props = defineProps({
   live: Boolean
 })
 
-function capitalizeFirstLetters(str) {
-    const arr = str.split(" ");
-
-    for (var i = 0; i < arr.length; i++) {
-        arr[i] = arr[i].charAt(0).toUpperCase() + arr[i].slice(1);
-    }
-    return arr.join(" ");
-}
-
-function capitalizeWord(str) {
-    return str.toUpperCase();
-}
-
-function formatEventDate(startDate, endDate) {
-    startDate = new Date(startDate);
-    endDate = new Date(endDate);
-
-    if (compareAsc(startDate, endDate) == 0) {
-        return format(startDate, 'd LLL yyyy').toUpperCase();
-    } else {
-        return (format(startDate, 'd') + '-' + format(endDate, 'd LLL yyyy')).toUpperCase();
-    }
-}
 
 </script>
 
 <template>
 
     <PageHeader
-        :title="capitalizeWord(performance.athlete.lastName) + ' ' + capitalizeFirstLetters(performance.athlete.firstName)" 
+        :title="capitalizeWord(performance.athlete.lastName) + ' ' + capitalizeFirstLetter(performance.athlete.firstName)" 
         :back_button='true'>
     </PageHeader>
 
@@ -135,7 +112,7 @@ export default {
         if (this.performance.positions) 
             this.positions = await RaceService.getRacePositions(this.performance.race.id);
         
-        this.latestRaces = await PerformanceService.getLatestPerformance(this.performance.athlete.id, 3); 
+        this.latestRaces = await PerformanceService.getLatestPerformance(this.performance.athlete.id, 3);
 
 
         this.connection = new WebSocket("ws://localhost:3000")

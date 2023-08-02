@@ -1,40 +1,50 @@
 import axios from "axios"
 import { format } from 'date-fns'
-import Performance from '../services/PerformanceModel.js'
+import { formatDate } from '../services/Formating.js';
 
 /**
- * 
- * @param {*} athlete_id 
- * @param {*} race_id 
- * @returns 
+ * Get a performance with athlete and race IDs
+ * @param athlete_id - ID of the athlete
+ * @param race_id - ID of the race
+ * @returns performance found or empty array
  */
 export async function getPerformance(athlete_id, race_id) {
 
     let url ='http://localhost:3000/performances?athlete=' + athlete_id + "&race=" + race_id;
   
-      const res = await axios.get(url);
-      if (res.status != 404) {
-        return res.data
-      } else {
-        return []
-      }
+    const res = await axios.get(url);
+    if (res.status != 404) {
+    return res.data
+    } else {
+    return []
+    }
 }
 
+/**
+ * Get a performance from race ID
+ * @param race_id - ID of the race
+ * @returns performance found or empty array
+ */
 export async function getPerformanceByRace(race_id) {
 
     let url = 'http://localhost:3000/performances?race=' + race_id;
   
-      const res = await axios.get(url);
-      if (res.status != 404) {
-        return res.data
-      } else {
-        return []
-      }
+    const res = await axios.get(url);
+    if (res.status != 404) {
+    return res.data
+    } else {
+    return []
+    }
 }
 
+/**
+ * Get a specific performance from its ID
+ * @param {*} id - ID of the performance
+ * @returns performance found or empty array
+ */
 export async function getPerformanceById(id) {
 
-  let url ='http://localhost:3000/performances/' + id
+    let url ='http://localhost:3000/performances/' + id
 
     const res = await axios.get(url);
     if (res.status != 404) {
@@ -44,8 +54,14 @@ export async function getPerformanceById(id) {
     }
 }
 
+/**
+ * Get latest performances of an athlete
+ * @param athlete_id - ID of the athlete
+ * @param limit - limit the number of results returned
+ * @returns performance found or empty array
+ */
 export async function getLatestPerformance(athlete_id, limit) {
-    let races = [];
+    let performances = [];
   
     let url = 'http://localhost:3000/performances?athlete=' + athlete_id;
 
@@ -54,22 +70,27 @@ export async function getLatestPerformance(athlete_id, limit) {
     }
     const res = await axios.get(url, { validateStatus: false });
   
-      if (res.status != 404) {
-        res.data.forEach(performance => {
-          races.push({
-            "meeting": performance.race.meeting.name || "",
-            "date": performance.race.meeting.startDate || "",
-            "discipline": performance.race.discipline.distance + "m" || "",
-            "result": performance.result || ""
-          })
-        });
+    if (res.status != 404) {
+    res.data.forEach(performance => {
+        performances.push({
+        "meeting": performance.race.meeting.name || "",
+        "date": performance.race.meeting.startDate || "",
+        "discipline": performance.race.discipline.distance + "m" || "",
+        "result": performance.result || ""
+        })
+    });
 
-        return races
-      } else {
-        return []
-      }
+    return performances
+    } else {
+    return []
+    }
 }
 
+/**
+ * Get highlights of a performance (rank, result and reaction time)
+ * @param performance - Performance to get the highlights from
+ * @returns Array with highlights
+ */
 export function getHighlights(performance) {
     return [
         {
@@ -92,6 +113,11 @@ export function getHighlights(performance) {
     ]
 }
 
+/**
+ * Get all speed from positions array
+ * @param positions - Array of positions
+ * @returns Array of all speeds in the race
+ */
 export function getSpeedArray(positions) {
     let speeds = [];
 
@@ -111,6 +137,11 @@ export function getSpeedArray(positions) {
     return speeds;
 }
 
+/**
+ * Get the average speed from array of value
+ * @param speeds - Array of speeds
+ * @returns Array of speed informations
+ */
 export function getAverageSpeedInfos(speeds) {
     let sum = 0;
     speeds.forEach(item => {
@@ -131,9 +162,14 @@ export function getAverageSpeedInfos(speeds) {
             "legend":"Average"
         }]
     }
-    
 }
 
+/**
+ * Get an array of pressures and times
+ * @param pressures - array of pressure
+ * @param times - array of times
+ * @returns Array with pressures/times
+ */
 export function getPressureArray(pressures, times) {
     let pressuresArray = [];
 
@@ -149,6 +185,11 @@ export function getPressureArray(pressures, times) {
     return pressuresArray;
 }
 
+/**
+ * Get reaction time informations
+ * @param performance - Performance to get reaction time informations from
+ * @returns Array of reaction time informations
+ */
 export function getReactionTimeInfos(performance) {
     return {
         "text": performance.reactionTime != undefined ? (performance.reactionTime<=0?"":"+") + performance.reactionTime + " s" 
@@ -158,11 +199,16 @@ export function getReactionTimeInfos(performance) {
     }
 }
 
+/**
+ * Get athlete informations (Date of birth, nationality, disciplines)
+ * @param performance - Performance to get athlete's informations from
+ * @returns Array of athlete informations
+ */
 export function getAthleteInfos(performance) {
     let athleteInfosArray = [];
     if (performance.athlete.dateOfBirth) {
         athleteInfosArray.push({
-            "text": performance.athlete.dateOfBirth.replace(/-/g, "."), 
+            "text": formatDate(performance.athlete.dateOfBirth.replace(/-/g, ".")), 
             "icon": "calendar.svg", 
             "legend": "Date of birth"
         })

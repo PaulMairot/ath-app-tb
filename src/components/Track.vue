@@ -1,7 +1,8 @@
 <script setup>
 import { onUpdated, ref } from 'vue';
-import InfoVertical from '../components/InfoVertical.vue';
 import { format } from 'date-fns'
+
+import InfoVertical from '../components/InfoVertical.vue';
 
 const props = defineProps({
     athletes: Array,
@@ -12,42 +13,29 @@ const props = defineProps({
 
 const emit = defineEmits(['update'])
 
+let athletePerformance = ref(null)
+let traceInfo = ref({
+    "text": "-",
+    "legend": "Runned Distance"
+});
+let selectedTime = ref(0);
+let timeList = ref([])
 
+/**
+ * Get athlete from property and value
+ * @param property - property to check
+ * @param value - value of the property to find
+ */
 function findAthlete(property, value) {
     return props.athletes.find(athlete => {
         return athlete[property] == value
     })
 }
 
-
-let points =[];
-
-let athletePerformance = ref(null)
-let traceInfo = ref({
-    "text": "-",
-    "legend": "Runned Distance"
-});
-
-function getPointLine() {
-    let path = document.getElementById('path_ath1')
-    
-    
-    for (let i = 0; i < 21; i++) {
-      let pt = path.getPointAtLength(Math.floor(path.getTotalLength())*i/30);
-      pt.x = Math.round(pt.x);
-      pt.y = Math.round(pt.y);
-      
-      points.push(pt);
-      
-    }
-
-    console.table(points);
-}
-
-let selectedTime = ref(0);
-
-
-
+/**
+ * Generate SVG path from a list of positions
+ * @param positions - array of positions
+ */
 function defineTrace(positions) {
     let path = "M"
     positions.forEach(position => {
@@ -57,6 +45,11 @@ function defineTrace(positions) {
     return path;
 }
 
+/**
+ * Find array's closest element to target
+ * @param {*} array - array to search in
+ * @param {*} target - value targeted
+ */
 function findClosest(array, target) {
     let left = 0,
     right = array.length - 1;
@@ -70,7 +63,11 @@ function findClosest(array, target) {
     return array[left];
 };
 
-function formatTime(times) {
+/**
+ * Format a list of times
+ * @param times - array of times to format
+ */
+function formatTimeTrack(times) {
     let formattedTimes = [];
     
     times.forEach(time => {
@@ -82,6 +79,10 @@ function formatTime(times) {
     return formattedTimes;
 }
 
+/**
+ * Format time to display on track
+ * @param time - time to format
+ */
 function formatDisplayTime(time) {
     time = time.toString().padStart(9, '0') 
 
@@ -96,8 +97,10 @@ function formatDisplayTime(time) {
     return time
 }
 
-let timeList = ref([])
-
+/**
+ * Emit informations of an athlete
+ * @param athlete - athlete informations to emit
+ */
 function emitInfos(athlete) {
     if (athlete) {
         let closestNumber = findClosest(timeList, document.getElementById("range").value);
@@ -111,6 +114,10 @@ function emitInfos(athlete) {
     }
 }
 
+/**
+ * Change time selected on track from input range
+ * @param range - Range input
+ */
 function changeTime(range) {
 
     let closestNumber = findClosest(timeList, range.value);
@@ -136,8 +143,10 @@ function changeTime(range) {
     emitInfos(athlete);  
 }
 
-
-
+/**
+ * Change athlete selected
+ * @param athlete - athlete selected
+ */
 function changeSelection(athlete) {
     // Clear selection in athletes array
     props.athletes.forEach(ath => {
@@ -178,7 +187,7 @@ function changeSelection(athlete) {
 onUpdated(() => {
 
     if (props.athletes[0] && timeList.value) {
-        timeList = formatTime(props.athletes[0].time);
+        timeList = formatTimeTrack(props.athletes[0].time);
     }
 
     if (props.selectedAthleteId) {
@@ -201,10 +210,6 @@ onUpdated(() => {
     width="100%"
     height="100%"
     preserveAspectRatio="xMidYMid">
-
-        <!-- <g stroke-width="1.5px" fill="none" stroke="blue">
-            <path id="path_ath1" d="M 125 210 A 62.5 62.5 0 0 1 125 45"/>
-        </g> -->
 
         <g stroke-width="1px" fill="none">
         <path d="M 125 250 A 122.5 122.5 0 0 1 125 5"/>

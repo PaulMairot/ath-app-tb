@@ -1,30 +1,18 @@
 <script setup>
 import { useRoute } from 'vue-router'
-import { format, compareAsc } from 'date-fns'
+
+import { formatEventDate } from '../services/Formating.js';
 
 import PageHeader from '../components/PageHeader.vue';
 import athleteRankCard from '../components/AthleteRankCard.vue';
 import * as RaceService from '../services/Race.js'
 import RaceCardDetailled from '../components/RaceCardDetailled.vue';
-
 import Race from '../services/RaceModel.js'
 
 import TrackCard from '../components/TrackCard.vue';
 const props = defineProps({
   live: Boolean
 })
-
-
-function formatEventDate(startDate, endDate) {
-    startDate = new Date(startDate);
-    endDate = new Date(endDate);
-
-    if (compareAsc(startDate, endDate) == 0) {
-        return format(startDate, 'd LLL yyyy').toUpperCase();
-    } else {
-        return (format(startDate, 'd') + '-' + format(endDate, 'd LLL yyyy')).toUpperCase();
-    }
-}
 
 
 </script>

@@ -1,5 +1,5 @@
 <script setup>
-import axios from "axios"
+import { format } from 'date-fns'
 
 import PageHeader from '../components/PageHeader.vue';
 import CardHeader from '../components/CardHeader.vue';
@@ -9,11 +9,9 @@ import SeeAllButton from "../components/SeeAllButton.vue";
 
 import * as MeetingService from '../services/Meeting.js'
 import * as RaceService from '../services/Race.js'
+import { formatEventDate } from '../services/Formating.js'
 
 import { onMounted, ref } from 'vue';
-import { format, compareAsc } from 'date-fns'
-
-
 
 let upcomingMeetings = ref([]); 
 let pastMeeting = ref([]);
@@ -22,16 +20,6 @@ let races = ref([]);
 let finishedRaces = ref([]);
 let liveRaces = ref([]);
 
-function formatEventDate(startDate, endDate) {
-    startDate = new Date(startDate);
-    endDate = new Date(endDate);
-
-    if (compareAsc(startDate, endDate) == 0) {
-        return format(startDate, 'd LLL yyyy').toUpperCase();
-    } else {
-        return (format(startDate, 'd') + '-' + format(endDate, 'd LLL yyyy')).toUpperCase();
-    }
-}
 
 onMounted(async ()=> {
     upcomingMeetings.value = await MeetingService.getUpcomingMeetings(format(new Date(), 'yyyy-MM-dd'), 4);

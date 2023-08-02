@@ -8,11 +8,17 @@ const props = defineProps({
   accent: Boolean
 })
 
+/**
+ * Get url to SVG file of information icon 
+ */
 function getIconUrl() {
-  // This path must be correct for your file
   return new URL(`../assets/icons/${props.icon}`, import.meta.url)
 }
 
+/**
+ * Check if a string referes to a SVG file
+ * @param str - String to check
+ */
 function isIcon(str) {
     return str.substring(str.length, str.length-4) === '.svg'
 }

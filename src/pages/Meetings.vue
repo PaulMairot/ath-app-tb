@@ -5,7 +5,8 @@ import CardHeader from '../components/CardHeader.vue';
 import EventCard from '../components/EventCard.vue';
 import * as MeetingService from '../services/Meeting.js'
 
-import { format, compareAsc, compareDesc, parseISO } from 'date-fns'
+import { compareAsc, parseISO } from 'date-fns';
+import { formatEventDate } from '../services/Formating.js';
 
 let meetings = ref([]);
 let upcomingMeetings = ref([]);
@@ -14,16 +15,6 @@ let competitionList = ref([]);
 
 let competition_selected = ref("");
 
-function formatEventDate(startDate, endDate) {
-    startDate = new Date(startDate);
-    endDate = new Date(endDate);
-
-    if (compareAsc(startDate, endDate) == 0) {
-        return format(startDate, 'd LLL yyyy').toUpperCase();
-    } else {
-        return (format(startDate, 'd') + '-' + format(endDate, 'd LLL yyyy')).toUpperCase();
-    }
-}
 
 onMounted(async ()=> {
     meetings.value = await MeetingService.getMeetings();

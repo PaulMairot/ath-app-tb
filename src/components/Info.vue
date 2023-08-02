@@ -8,8 +8,10 @@ const props = defineProps({
   link: String
 })
 
+/**
+ * Get url to SVG file of information icon 
+ */
 function getIconUrl() {
-  // This path must be correct for your file
   return new URL(`../assets/icons/${props.icon}`, import.meta.url)
 }
 

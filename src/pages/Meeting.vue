@@ -1,8 +1,8 @@
 <script setup>
 import { useRoute } from 'vue-router'
+import { onMounted, ref } from 'vue';
 
 import PageHeader from '../components/PageHeader.vue';
-import InfoVertical from '../components/InfoVertical.vue';
 import DefaultCard from '../components/DefaultCard.vue';
 import CardHeader from '../components/CardHeader.vue';
 import RaceCard from '../components/RaceCard.vue';
@@ -10,25 +10,13 @@ import RaceCard from '../components/RaceCard.vue';
 import * as MeetingService from '../services/Meeting.js'
 import Meeting from '../services/MeetingModel.js'
 import * as RaceService from '../services/Race.js'
-
-import { format, compareAsc } from 'date-fns'
-import { onMounted, ref } from 'vue';
-
-function formatEventDate(startDate, endDate) {
-    startDate = new Date(startDate);
-    endDate = new Date(endDate);
-
-    if (compareAsc(startDate, endDate) == 0) {
-        return format(startDate, 'd LLL yyyy').toUpperCase();
-    } else {
-        return (format(startDate, 'd') + '-' + format(endDate, 'd LLL yyyy')).toUpperCase();
-    }
-}
+import { formatDate } from '../services/Formating.js';
 
 let races = ref([]);
+
 onMounted(async ()=> {
-    races.value = await RaceService.getRaces();
-    
+    const route = useRoute();
+    races.value = await RaceService.getRacesByMeeting(0, route.params.id);
 })
 </script>
 
@@ -38,7 +26,7 @@ onMounted(async ()=> {
         <DefaultCard card_title="Meeting informations" :infos="formatedInfo"></DefaultCard>
 
         <div class="group_infos">
-            <CardHeader title="Latest races" :live="false"></CardHeader>
+            <CardHeader title="Races" :live="false"></CardHeader>
             <div class="list">
                 <RaceCard v-for="race in races" 
                     :title="race.discipline.distance + 'm ' + race.discipline.gender.toUpperCase()" 
@@ -66,24 +54,25 @@ export default {
         const route = useRoute();
         this.meeting = await MeetingService.getMeetingById(route.params.id);
 
-        if (this.meeting)
-        this.formatedInfo = [
-            {
-                "text": this.meeting.city, 
-                "icon": "city.svg", 
-                "legend": this.meeting.country.name
-            },
-            {
-                "text": this.meeting.startDate, 
-                "icon": "calendar.svg", 
-                "legend": "Starting"
-            },
-            {
-                "text": this.meeting.races.length, 
-                "icon": "shoe.svg", 
-                "legend": "Races"
-            }
-        ]
+        if (this.meeting) {
+            this.formatedInfo = [
+                {
+                    "text": this.meeting.city, 
+                    "icon": "city.svg", 
+                    "legend": this.meeting.country.name
+                },
+                {
+                    "text": formatDate(this.meeting.startDate), 
+                    "icon": "calendar.svg", 
+                    "legend": "Starting"
+                },
+                {
+                    "text": this.meeting.races.length || '0', 
+                    "icon": "shoe.svg", 
+                    "legend": "Races"
+                }
+            ]
+        }
         
     }
 }
@@ -110,6 +99,10 @@ export default {
         gap: 10px;
         max-height: 55vh;
         overflow: scroll;
+    }
+
+    .list::-webkit-scrollbar { 
+        display: none; 
     }
 
     .no_content {

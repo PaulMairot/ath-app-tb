@@ -1,6 +1,7 @@
 <script setup>
-import { computed, inject, onBeforeMount, onMounted, reactive, ref, toRaw, toRef, watch, watchEffect, watchPostEffect } from 'vue';
 import '../style.css';
+
+import { formatDate } from '../services/Formating.js';
 
 const props = defineProps({
   title: String,
@@ -9,15 +10,13 @@ const props = defineProps({
 
 </script>
 
-
-
 <template>
     <div id="info_container">
         <h2>{{ title }}</h2>
         <ul>
             <li v-for="result in results" :key="result">
                  <span>{{ result.meeting }}</span>
-                 <span>{{ result.date }}</span>
+                 <span>{{ formatDate(result.date) }}</span>
                  <span>{{ result.discipline }}</span>
                  <span class="primary">{{ result.result }}</span>
             </li>

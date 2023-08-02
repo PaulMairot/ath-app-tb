@@ -3,7 +3,7 @@ import '../style.css';
 import InfoVertical from '../components/InfoVertical.vue';
 import CardHeader from './CardHeader.vue';
 import Track from './Track.vue';
-import { computed, onUpdated, reactive, ref } from 'vue';
+import { ref } from 'vue';
 
 const props = defineProps({
   card_title: String,
@@ -11,46 +11,6 @@ const props = defineProps({
   enableTrace: Boolean,
   selectedAthleteId: String
 });
-
-function getPerformance() {
-    
-}
-
-
-function formatAthletesArray(positions) {
-
-    
-    const result = {};
-
-    positions.forEach(async (obj) => {
-        const athleteName = `${obj.athlete.firstName} ${obj.athlete.lastName}`;
-        
-        if (!result[athleteName]) {
-        result[athleteName] = {
-            id: obj.athlete.id,
-            name: athleteName,
-            race: obj.race,
-            lane: obj.race.performances.find(perf => { return perf.athlete === obj.athlete.id }).lane || null,
-            selected: obj.athlete.id === props.selectedAthleteId ? true : false,
-            time: [],
-            positions: [],
-            rank: [],
-            speed: [],
-            gapToLeader: [],
-            runnedDistance: [],
-        };
-        }
-
-        result[athleteName].time.push(obj.time);
-        result[athleteName].positions.push({ x: obj.coordinates[0], y: obj.coordinates[1] });
-        result[athleteName].rank.push(obj.rank);
-        result[athleteName].speed.push(obj.speed);
-        result[athleteName].gapToLeader.push(obj.gapToLeader);
-        result[athleteName].runnedDistance.push(obj.runnedDistance || 0) ;
-    });
-
-    return Object.values(result);
-}
 
 let trace = ref(false);
 let infoSecondary = ref(false)
@@ -83,7 +43,47 @@ let infos = ref([
     }
 ]);
 
-    
+/**
+ * Format array of athletes with positions
+ * @param positions - Array of positions
+ */
+function formatAthletesArray(positions) {    
+    const result = {};
+
+    positions.forEach(async (obj) => {
+        const athleteName = `${obj.athlete.firstName} ${obj.athlete.lastName}`;
+        
+        if (!result[athleteName]) {
+        result[athleteName] = {
+            id: obj.athlete.id,
+            name: athleteName,
+            race: obj.race,
+            lane: obj.race.performances.find(perf => { return perf.athlete === obj.athlete.id }).lane || null,
+            selected: obj.athlete.id === props.selectedAthleteId ? true : false,
+            time: [],
+            positions: [],
+            rank: [],
+            speed: [],
+            gapToLeader: [],
+            runnedDistance: [],
+        };
+        }
+
+        result[athleteName].time.push(obj.time);
+        result[athleteName].positions.push({ x: obj.coordinates[0], y: obj.coordinates[1] });
+        result[athleteName].rank.push(obj.rank);
+        result[athleteName].speed.push(obj.speed);
+        result[athleteName].gapToLeader.push(obj.gapToLeader);
+        result[athleteName].runnedDistance.push(obj.runnedDistance || 0) ;
+    });
+
+    return Object.values(result);
+}
+
+/**
+ * Update data on track card
+ * @param data - Data to update
+ */
 function updateInfos(data) {
     positionData.value = data
 
@@ -109,6 +109,9 @@ function updateInfos(data) {
     ]
 }
 
+/**
+ * Change informations of track card
+ */
 function changeInfo() {
     infoSecondary.value = !infoSecondary.value;
     updateInfos(positionData.value)

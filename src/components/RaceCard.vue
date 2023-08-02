@@ -1,7 +1,7 @@
 <script setup>
 import '../style.css';
 
-import CardHeader from '../components/cardHeader.vue'
+import CardHeader from '../components/cardHeader.vue';
 
 const props = defineProps({
   card_title: String,

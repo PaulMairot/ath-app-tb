@@ -4,6 +4,8 @@ import "/node_modules/flag-icons/css/flag-icons.min.css";
 
 import Info from '../components/Info.vue';
 
+import { capitalizeFirstLetter, capitalizeWord } from '../services/Formating.js'
+
 const props = defineProps({
   lastName: String,
   firstName: String,
@@ -14,24 +16,12 @@ const props = defineProps({
   link: String
 })
 
-/* function getRankIcon() {
-  // This path must be correct for your file
-  return new URL(`../assets/icons/number_${props.rank}.svg`, import.meta.url)
-} */
-
-function capitalizeFirstLetters(str) {
-    const arr = str.split(" ");
-
-    for (var i = 0; i < arr.length; i++) {
-        arr[i] = arr[i].charAt(0).toUpperCase() + arr[i].slice(1);
-    }
-    return arr.join(" ");
-}
-
-function capitalizeWord(str) {
-    return str.toUpperCase();
-}
-
+/**
+ * Get url to the rank SVG file
+ * @param rank - Rank of the athlete
+ * @param mention - Mention of the athlete's race
+ * @returns url of the SVG file
+ */
 function getRankIcon(rank, mention) {
     if(!isNaN(rank) && !isNaN(parseFloat(rank))) {
         return new URL(`../assets/icons/number_${rank}.svg`, import.meta.url)
@@ -40,7 +30,6 @@ function getRankIcon(rank, mention) {
         return new URL(`../assets/icons/${mention}.svg`, import.meta.url)
     }
 }
-
 
 </script>
 
@@ -51,7 +40,7 @@ function getRankIcon(rank, mention) {
         </div>
         <div class="athlete_infos">
             <div class="row">
-                <h2>{{ capitalizeWord(lastName) + " " + capitalizeFirstLetters(firstName)}}</h2>
+                <h2>{{ capitalizeWord(lastName) + " " + capitalizeFirstLetter(firstName)}}</h2>
             </div>
             <div class="row">
                 <Info v-if="time" class="infoComponent" :text='time' icon="chrono.svg" :accent='true'></Info>
