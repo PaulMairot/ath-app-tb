@@ -137,13 +137,16 @@ export default {
         
         this.latestRaces = await PerformanceService.getLatestPerformance(this.performance.athlete.id, 3); 
 
+
         this.connection = new WebSocket("ws://localhost:3000")
-        console.log(this.connection);
-        this.connection.onmessage = function(event) {
+        
+        this.connection.onmessage = (event) => {
+
             const message = JSON.parse(event.data);
+
             if (message.ressource == "performance") {
                 if (route.params.id == message.data.id)
-                    console.log(performance.value);
+                    this.performance = message.data
             }
             
         }

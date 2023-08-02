@@ -79,7 +79,8 @@ export default {
     data() {
         return {
             race: new Race,
-            positions: []
+            positions: [],
+            connection: null
         };
     },
     async created() {
@@ -88,6 +89,25 @@ export default {
 
         if (this.race.athletes.length) {
           this.positions = await RaceService.getRacePositions(route.params.id);
+        }
+
+
+        this.connection = new WebSocket("ws://localhost:3000")
+        
+        this.connection.onmessage = async (event) => {
+
+            const message = JSON.parse(event.data);
+            if (message.ressource == "performance" && message.data.race.id == route.params.id) {
+                let index = this.race.performances.findIndex(p => p.id == message.data.id);
+                if (index != -1) {
+                  this.race.performances[index].value = message.data.performance
+
+                  if (this.race.athletes.length) {
+                    this.positions = await RaceService.getRacePositions(route.params.id);
+                  }
+                }
+            }
+            
         }
         
     },

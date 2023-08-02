@@ -2,6 +2,12 @@ import axios from "axios"
 import { format } from 'date-fns'
 import Performance from '../services/PerformanceModel.js'
 
+/**
+ * 
+ * @param {*} athlete_id 
+ * @param {*} race_id 
+ * @returns 
+ */
 export async function getPerformance(athlete_id, race_id) {
 
     let url ='http://localhost:3000/performances?athlete=' + athlete_id + "&race=" + race_id;

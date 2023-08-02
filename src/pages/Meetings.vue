@@ -99,6 +99,10 @@ section > * {
     min-width: 280px;
 }
 
+section::-webkit-scrollbar { 
+    display: none; 
+}
+
 .header:nth-child(6) {
     max-width: 150px;
     margin-right: 5px;
