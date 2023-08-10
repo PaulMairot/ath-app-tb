@@ -168,6 +168,7 @@ export default {
         #content {
             display: flex;
             gap: 20px;
+            padding-left: 40px;
         }
         .group_infos {
             border-radius: 8px;

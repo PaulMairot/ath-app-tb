@@ -140,7 +140,8 @@ export default {
         #content {
             display: flex;
             flex-direction: row;
-            gap: 20px
+            gap: 20px;
+            padding-left: 40px;
         }
         .group_infos {
             border-radius: 8px;
